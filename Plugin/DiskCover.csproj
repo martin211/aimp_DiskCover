@@ -83,7 +83,7 @@
   <ItemGroup>
     <Reference Include="LastFmLibNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Libraries\LastFmLibNet.dll</HintPath>
+      <HintPath>..\packages\LastFmLibNet\LastFmLibNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -151,7 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SDK\aimp_dotnet\aimp_dotnet.vcxproj">
