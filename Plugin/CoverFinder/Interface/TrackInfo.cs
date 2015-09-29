@@ -26,7 +26,7 @@ namespace AIMP.DiskCover
             var trackInfo = player.CurrentFileInfo;          
             //StreamType = player.CurrentPlayingInfo.StreamType;
 
-            IsStream = trackInfo.FileName.StartsWith("http") || trackInfo.FileName.StartsWith("https") || trackInfo.FileName.StartsWith("ftp");
+            IsStream = trackInfo.FileName.StartsWith("http") || trackInfo.FileName.StartsWith("https") || trackInfo.FileName.StartsWith("ftp") || trackInfo.FileName.Contains("://");
 
             if (trackInfo != null)
             {
