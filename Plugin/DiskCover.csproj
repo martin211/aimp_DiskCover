@@ -81,6 +81,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="aimp_dotnet, Version=1.0.0.40934, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\AIMP3\Plugins\aimp_dotnet\aimp_dotnet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LastFmLibNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LastFmLibNet\LastFmLibNet.dll</HintPath>
@@ -151,12 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SDK\aimp_dotnet\aimp_dotnet.vcxproj">
-      <Project>{75370e57-9de2-4c0a-9c4d-638feb62c5c7}</Project>
-      <Name>AimpDotnetPlugin</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

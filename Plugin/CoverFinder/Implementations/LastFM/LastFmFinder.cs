@@ -3,7 +3,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using LastFmLib.General;
 using System.Drawing;
-using AIMP.SDK.Interfaces;
+using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover.LastFM
 {

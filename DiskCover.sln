@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskCover", "Plugin\DiskCover.csproj", "{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDK", "SDK", "{A48E45A9-B0F9-4063-B914-BB066046F05A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AimpDotnetPlugin", "SDK\aimp_dotnet\aimp_dotnet.vcxproj", "{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIMPDotNet", "SDK\AIMPDotNet\AIMPDotNet.csproj", "{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,32 +25,8 @@ Global
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Win32.ActiveCfg = Release|Any CPU
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Debug|Win32.Build.0 = Debug|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Release|Any CPU.ActiveCfg = Release|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Release|Win32.ActiveCfg = Release|Win32
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7}.Release|Win32.Build.0 = Release|Win32
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{75370E57-9DE2-4C0A-9C4D-638FEB62C5C7} = {A48E45A9-B0F9-4063-B914-BB066046F05A}
-		{154C60CF-2DAE-4227-AD2C-CCE7C63CDE5A} = {A48E45A9-B0F9-4063-B914-BB066046F05A}
 	EndGlobalSection
 EndGlobal

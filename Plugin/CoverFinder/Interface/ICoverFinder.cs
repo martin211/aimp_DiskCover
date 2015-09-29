@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using AIMP.SDK.Interfaces;
+using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover
 {

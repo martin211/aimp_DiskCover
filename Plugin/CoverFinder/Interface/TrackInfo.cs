@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using AIMP.SDK;
-using AIMP.SDK.Interfaces;
+using AIMP.SDK.Services.Player;
 
 
 namespace AIMP.DiskCover

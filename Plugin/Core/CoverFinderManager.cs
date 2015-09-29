@@ -10,9 +10,8 @@ using System.Windows;
 using AIMP.DiskCover.Resources;
 using System.Drawing;
 using System.Threading;
-using System.Threading.Tasks;
-using AIMP.SDK.Interfaces;
 using AIMP.SDK.Logger;
+using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover
 {

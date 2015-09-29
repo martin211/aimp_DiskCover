@@ -3,7 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel.Composition;
-using AIMP.SDK.Interfaces;
+using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover
 {

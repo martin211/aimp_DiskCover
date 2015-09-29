@@ -1,5 +1,4 @@
-﻿using AIMP.SDK.Interfaces;
-using AIMP.SDK.Logger;
+﻿using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover.CoverFinder.Implementations
 {
