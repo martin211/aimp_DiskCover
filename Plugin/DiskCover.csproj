@@ -81,10 +81,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="aimp_dotnet, Version=1.0.0.40934, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="aimp_dotnet, Version=1.0.0.40958, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\AIMP3\Plugins\aimp_dotnet\aimp_dotnet.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\AimpDotNet\aimp_dotnet.dll</HintPath>
     </Reference>
     <Reference Include="LastFmLibNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
