@@ -91,7 +91,7 @@ namespace AIMP.DiskCover.CoverFinder.Implementations
                     _resetEvent.Set();
                 };
 
-            player.AlbumArtManager.GetImage(player.CurrentFileInfo, FingCovertArtType.None, null);
+            player.AlbumArtManager.GetImage(player.CurrentFileInfo, AimpFingCovertArtType.None, null);
             _resetEvent.WaitOne(new TimeSpan(0, 0, 0, 20));
            
             return Result;

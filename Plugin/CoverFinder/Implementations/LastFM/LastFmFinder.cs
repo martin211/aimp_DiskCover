@@ -57,7 +57,7 @@ namespace AIMP.DiskCover.LastFM
                             result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Original);
                             if (result == null)
                             {
-                                if (n.Result.ImageLarge != null)
+                                if (n.Result.ImageExtraLarge != null)
                                     result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.ExtraLarge);
                                 else if (n.Result.ImageLarge != null)
                                     result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Large);
@@ -88,7 +88,7 @@ namespace AIMP.DiskCover.LastFM
                                 result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Original);
                                 if (result == null)
                                 {
-                                    if (info.Album.ImageLarge != null)
+                                    if (info.Album.ImageExtraLarge != null)
                                         result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.ExtraLarge);
                                     else if (info.Album.ImageLarge != null)
                                         result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Large);

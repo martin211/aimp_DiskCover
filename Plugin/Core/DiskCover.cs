@@ -141,13 +141,13 @@ namespace AIMP.DiskCover
             _isInitialized = true;
         }
 
-        private void PlayerOnStateChanged(PlayerState state)
+        private void PlayerOnStateChanged(AimpPlayerState state)
         {
-            if (state == PlayerState.Playing && _isShowen)
+            if (state == AimpPlayerState.Playing && _isShowen)
             {
                 RequestFreshCoverImage();
             }
-            else if (state == PlayerState.Stopped && _isShowen)
+            else if (state == AimpPlayerState.Stopped && _isShowen)
             {
                 _coverWindow.ChangeCoverImage(null);
             }
@@ -264,7 +264,7 @@ namespace AIMP.DiskCover
                 return;
             }
 
-            if (Player.State == PlayerState.Playing)
+            if (Player.State == AimpPlayerState.Playing)
             {
                 _coverFinderManager.StartLoadingBitmap();
             }
@@ -284,7 +284,7 @@ namespace AIMP.DiskCover
         private void OnEndFindCoverRequest(object s, FinderEvent e)
         {
             // if player is not playing, no need to apply search results.
-            if (Player.State == PlayerState.Playing)
+            if (Player.State == AimpPlayerState.Playing)
             {
                 UpdateImage(e.CoverBitmap);
             }

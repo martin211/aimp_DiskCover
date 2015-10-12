@@ -89,23 +89,16 @@ namespace AIMP.DiskCover
         {
             Guid initialRequestId;
 
-            lock (_syncRoot)
-            {
-                initialRequestId = _currentRequestId = Guid.NewGuid();
-            }
-
+            initialRequestId = _currentRequestId = Guid.NewGuid();
             OnBeginRequest(this, null);
 
             var token = new CancellationTokenSource();
             var task = Task.Run(() => LoadImageWorkItem(initialRequestId, token.Token), token.Token);
             if (await Task.WhenAny(task, Task.Delay(10000, token.Token)) == task)
             {
-                lock (_syncRoot)
+                if (initialRequestId == _currentRequestId)
                 {
-                    if (initialRequestId == _currentRequestId)
-                    {
-                        OnEndRequest(this, new FinderEvent(task.Result));
-                    }
+                    OnEndRequest(this, new FinderEvent(task.Result));
                 }
             }
             else
