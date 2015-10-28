@@ -36,18 +36,11 @@ namespace AIMP.DiskCover
         /// </summary>
         private CheckedMenuItem _menuItem;
 
-        private static IntPtr AimpHandle
+        private IntPtr AimpHandle
         {
             get
             {
-                var handle = Core.Native.Win32.FindWindowByCaption(IntPtr.Zero, "AIMP2");
-
-                if (handle == IntPtr.Zero)
-                {
-                    handle = Core.Native.Win32.FindWindowByCaption(IntPtr.Zero, "AIMP3");
-                }
-
-                return handle;
+                return Player.Win32Manager.GetAimpHandle();
             }
         }
 
@@ -105,6 +98,7 @@ namespace AIMP.DiskCover
 
             Player.Core.CoreMessage += CoreOnCoreMessage;
             Player.StateChanged += PlayerOnStateChanged;
+            Player.TrackChanged += PlayerOnTrackChanged;
 
             #endregion
 
@@ -139,6 +133,11 @@ namespace AIMP.DiskCover
             }
 
             _isInitialized = true;
+        }
+
+        private void PlayerOnTrackChanged(object sender, EventArgs eventArgs)
+        {
+            RequestFreshCoverImage();
         }
 
         private void PlayerOnStateChanged(AimpPlayerState state)
