@@ -3,10 +3,11 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using LastFmLib.General;
 using System.Drawing;
-using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover.LastFM
 {
+    using AIMP.SDK.Player;
+
     using LastFmLib.API20.Types;
 
     [Export(typeof(ICoverFinder))]

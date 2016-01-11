@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover
 {
+    using AIMP.SDK.Player;
+
     public interface ICoverFinder
     {
         /// <summary>

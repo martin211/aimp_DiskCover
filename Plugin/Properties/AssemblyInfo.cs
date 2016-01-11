@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(AIMP.DiskCover.DiskCover.PluginName)]
+[assembly: AssemblyTitle(AIMP.DiskCover.DiskCoverPlugin.PluginName)]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -37,4 +37,4 @@ using System.Runtime.InteropServices;
     // app, or any theme specific resource dictionaries)
 )]*/
 
-[assembly: AssemblyVersion(AIMP.DiskCover.DiskCover.Version + ".*")]
+[assembly: AssemblyVersion(AIMP.DiskCover.DiskCoverPlugin.Version + ".*")]

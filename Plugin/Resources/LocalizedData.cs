@@ -19,6 +19,10 @@ namespace AIMP.DiskCover.Resources
         public static String FailedToDeserializePlugin      { get { return ResourceManager.GetResourceString("FailedToDeserializePlugin"); } }
         public static String ErrorOnCoverImageSearch        { get { return ResourceManager.GetResourceString("ErrorOnCoverImageSearch"); } }
 
+        public static String ShowSettings { get
+        {
+            return ResourceManager.GetResourceString("ShowSettings");
+        } }
         /// <summary>
         /// Resources for settings dialog.
         /// </summary>

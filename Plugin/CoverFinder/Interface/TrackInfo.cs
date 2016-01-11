@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using AIMP.SDK.Services.Player;
-
 
 namespace AIMP.DiskCover
 {
+    using AIMP.SDK.Player;
+
     /// <summary>
     /// Container for data of various data of 
     /// a musical track which might be required by

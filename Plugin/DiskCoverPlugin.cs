@@ -4,22 +4,26 @@ using System.Windows.Forms;
 using AIMP.DiskCover.Resources;
 using DiskCover.Settings;
 using AIMP.SDK;
-using AIMP.SDK.Services.MenuManager;
+using AIMP.SDK.MenuManager;
 using AIMP.SDK.UI.MenuItem;
 
 namespace AIMP.DiskCover
 {
     using System.IO;
 
+    using AIMP.DiskCover.Settings;
+    using AIMP.SDK.Logger;
+    using AIMP.SDK.Player;
+
     using IWin32Window = System.Windows.Forms.IWin32Window;
 
     [AimpPlugin(PluginName, "Evgeniy Bogdan, Roman Nikitin", Version)]
 // ReSharper disable ClassNeverInstantiated.Global
-    public class DiskCover : AimpPlugin
+    public class DiskCoverPlugin : AimpPlugin
 // ReSharper restore ClassNeverInstantiated.Global
     {
         public const String PluginName = "AIMP Disc Cover";
-        public const String Version = "1.6.0";
+        public const String Version = "1.6.2";
 
         /// <summary>
         /// Indicates that plugin has been loaded and thus should be disposed.
@@ -36,6 +40,9 @@ namespace AIMP.DiskCover
         /// </summary>
         private CheckedMenuItem _menuItem;
 
+        private ILogger _logger;
+        public ILogger LoggerManager => _logger ?? (_logger = new InternalLoggerManager());
+
         private IntPtr AimpHandle
         {
             get
@@ -43,16 +50,7 @@ namespace AIMP.DiskCover
                 return Player.Win32Manager.GetAimpHandle();
             }
         }
-
-        /// <summary>
-        /// Gets a value that indicates whether this plugin 
-        /// able to show settings dialog.
-        /// </summary>
-        public override bool HasSettingDialog
-        {
-            get { return true; }
-        }
-        
+       
         public override void Initialize()
         {
             LoggerManager.Write("DiskCover: Initialize plugin");
@@ -132,6 +130,9 @@ namespace AIMP.DiskCover
                 ShowCoverForm();
             }
 
+            var options = new OptionsFrame(Player);
+            Player.Core.RegisterExtension(options);
+
             _isInitialized = true;
         }
 
@@ -140,13 +141,13 @@ namespace AIMP.DiskCover
             RequestFreshCoverImage();
         }
 
-        private void PlayerOnStateChanged(AimpPlayerState state)
+        private void PlayerOnStateChanged(object sender, StateChangedEventArgs stateChangedEventArgs)
         {
-            if (state == AimpPlayerState.Playing && _isShowen)
+            if (stateChangedEventArgs.PlayerState == AimpPlayerState.Playing && _isShowen)
             {
                 RequestFreshCoverImage();
             }
-            else if (state == AimpPlayerState.Stopped && _isShowen)
+            else if (stateChangedEventArgs.PlayerState == AimpPlayerState.Stopped && _isShowen)
             {
                 _coverWindow.ChangeCoverImage(null);
             }
@@ -195,7 +196,7 @@ namespace AIMP.DiskCover
         /// This method is called when user requests settings dialog to open.
         /// </summary>
         /// <param name="parentWnd">A handler of a parent window.</param>
-        public override void ShowSettingDialog(IWin32Window parentWnd)
+        public void ShowSettingDialog(IWin32Window parentWnd)
         {
             var wnd = new SettingsWindow();
 
@@ -287,6 +288,27 @@ namespace AIMP.DiskCover
             {
                 UpdateImage(e.CoverBitmap);
             }
+        }
+
+        #endregion
+    }
+
+    internal class InternalLoggerManager : ILogger
+    {
+        #region Implementation of ILogger
+
+        public void Write(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        public void Write(Exception exception)
+        {
+            System.Diagnostics.Debug.WriteLine(exception.ToString());
+        }
+
+        public void Close()
+        {
         }
 
         #endregion

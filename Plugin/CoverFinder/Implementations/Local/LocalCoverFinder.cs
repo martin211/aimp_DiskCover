@@ -3,10 +3,10 @@ using System.IO;
 using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel.Composition;
-using AIMP.SDK.Services.Player;
 
 namespace AIMP.DiskCover
 {
+    using AIMP.SDK.Player;
 
     [Export(typeof(ICoverFinder))]
     public class LocalCoverFinder : ICoverFinder

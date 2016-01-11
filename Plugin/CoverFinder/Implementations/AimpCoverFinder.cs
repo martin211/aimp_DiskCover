@@ -1,13 +1,12 @@
-﻿using AIMP.SDK.Services.Player;
-
-namespace AIMP.DiskCover.CoverFinder.Implementations
+﻿namespace AIMP.DiskCover.CoverFinder.Implementations
 {
     using System;
     using System.ComponentModel.Composition;
     using System.Drawing;
     using System.Threading;
 
-    using global::AIMP.SDK.Services.AlbumArtManager;
+    using AIMP.SDK.AlbumArtManager;
+    using AIMP.SDK.Player;
 
     [Export(typeof(ICoverFinder))]
     public class AimpCoverFinder : ICoverFinder

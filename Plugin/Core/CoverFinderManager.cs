@@ -11,7 +11,7 @@ using AIMP.DiskCover.Resources;
 using System.Drawing;
 using System.Threading;
 using AIMP.SDK.Logger;
-using AIMP.SDK.Services.Player;
+using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover
 {

@@ -75,4 +75,7 @@
   <data name="FindRules_LastFM">
     <value>Искать на last.fm</value>
   </data>
+    <data name="ShowSettings">
+        <value>Настройки</value>
+    </data>
 </root>
