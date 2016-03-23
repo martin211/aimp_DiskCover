@@ -5,7 +5,6 @@ using AIMP.DiskCover.Resources;
 using DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.MenuManager;
-using AIMP.SDK.UI.MenuItem;
 
 namespace AIMP.DiskCover
 {
@@ -38,7 +37,7 @@ namespace AIMP.DiskCover
         /// <summary>
         /// Main menu item for the image cover window.
         /// </summary>
-        private CheckedMenuItem _menuItem;
+        private IAimpMenuItem _menuItem;
 
         private ILogger _logger;
         public ILogger LoggerManager => _logger ?? (_logger = new InternalLoggerManager());
@@ -81,12 +80,10 @@ namespace AIMP.DiskCover
 
             #endregion
 
-            _menuItem = new CheckBoxMenuItem(LocalizedData.AIMPMenuItemName)
-                            {
-                                Checked = Config.Instance.IsEnabled
-                            };
-
-            _menuItem.Click += AimpMenu_Click;
+            Player.MenuManager.CreateMenuItem(out _menuItem);
+            _menuItem.Checked = Config.Instance.IsEnabled;
+            _menuItem.OnExecute += AimpMenu_Click;
+            _menuItem.Style = AimpMenuItemStyle.CheckBox;
 
             Player.MenuManager.Add(ParentMenuType.AIMP_MENUID_COMMON_UTILITIES, _menuItem);
 
@@ -165,7 +162,7 @@ namespace AIMP.DiskCover
         {
             if (_menuItem != null)
             {
-                _menuItem.Click -= AimpMenu_Click;
+                _menuItem.OnExecute -= AimpMenu_Click;
             }
             
             // Unsubscibe from events
@@ -227,7 +224,7 @@ namespace AIMP.DiskCover
         /// </summary>
         private void AimpMenu_Click(object sender, EventArgs e)
         {
-            var isChecked = ((CheckBoxMenuItem)sender).Checked;
+            var isChecked = ((IAimpMenuItem)sender).Checked;
 
             if (isChecked)
             {
