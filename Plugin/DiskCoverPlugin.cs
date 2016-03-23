@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using AIMP.DiskCover.Resources;
@@ -33,6 +34,7 @@ namespace AIMP.DiskCover
         private CoverWindow _coverWindow;
 
         private bool _isShowen;
+        private bool _isChecked;
 
         /// <summary>
         /// Main menu item for the image cover window.
@@ -84,6 +86,8 @@ namespace AIMP.DiskCover
             _menuItem.Checked = Config.Instance.IsEnabled;
             _menuItem.OnExecute += AimpMenu_Click;
             _menuItem.Style = AimpMenuItemStyle.CheckBox;
+            _menuItem.Name = LocalizedData.AIMPMenuItemName;
+            _isChecked = Config.Instance.IsEnabled;
 
             Player.MenuManager.Add(ParentMenuType.AIMP_MENUID_COMMON_UTILITIES, _menuItem);
 
@@ -224,9 +228,9 @@ namespace AIMP.DiskCover
         /// </summary>
         private void AimpMenu_Click(object sender, EventArgs e)
         {
-            var isChecked = ((IAimpMenuItem)sender).Checked;
-
-            if (isChecked)
+            _isChecked = !_isChecked;
+            _menuItem.Checked = _isChecked;
+            if (_isChecked)
             {
                 ShowCoverForm();
             }
@@ -235,7 +239,7 @@ namespace AIMP.DiskCover
                 _coverWindow.Hide();
             }
 
-            Config.Instance.IsEnabled = isChecked;
+            Config.Instance.IsEnabled = _isChecked;
         }
 
 
