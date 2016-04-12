@@ -164,20 +164,6 @@ namespace AIMP.DiskCover
 
         public override void Dispose()
         {
-            if (_menuItem != null)
-            {
-                _menuItem.OnExecute -= AimpMenu_Click;
-            }
-            
-            // Unsubscibe from events
-            Player.Core.CoreMessage -= CoreOnCoreMessage;
-
-            if (_coverFinderManager != null)
-            {
-                _coverFinderManager.BeginRequest -= OnBeginFindCoverRequest;
-                _coverFinderManager.EndRequest -= OnEndFindCoverRequest;
-            }
-
             if (_coverWindow != null)
             {
                 _coverWindow.Close();
