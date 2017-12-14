@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using AIMP.DiskCover.Core;
 using AIMP.DiskCover.Resources;
 using DiskCover.Settings;
 using AIMP.SDK;
@@ -23,7 +24,7 @@ namespace AIMP.DiskCover
 // ReSharper restore ClassNeverInstantiated.Global
     {
         public const String PluginName = "AIMP Disc Cover";
-        public const String Version = "1.6.2";
+        public const String Version = "2.0.0";
 
         /// <summary>
         /// Indicates that plugin has been loaded and thus should be disposed.
@@ -55,7 +56,12 @@ namespace AIMP.DiskCover
         public override void Initialize()
         {
             LoggerManager.Write("DiskCover: Initialize plugin");
-            
+
+            DependencyResolver.Current.Register(new List<object>
+            {
+                Player
+            });
+
             #region Add an item to AIMP's main menu and subscribe to its checking.
 
             Config.ConfigFolderPath = Path.Combine(Player.Core.GetPath(AimpMessages.AimpCorePathType.AIMP_CORE_PATH_PROFILE), "DiskCover");

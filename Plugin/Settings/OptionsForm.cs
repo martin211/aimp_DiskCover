@@ -28,20 +28,21 @@ namespace AIMP.DiskCover.Settings
             InitializeComponent();
             SetParent(Handle, parentWindow);
             WindowState = FormWindowState.Maximized;
+            var settings = new SettingsWindow();
+            elementHost1.Child = settings;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var settings = new SettingsWindow();
-            var result = settings.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                var tmp = System.Threading.Interlocked.CompareExchange(ref OnSaved, null, null);
-                if (tmp != null)
-                {
-                    tmp(this, EventArgs.Empty);
-                }
-            }
-        }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    var result = settings.ShowDialog();
+        //    if (result.HasValue && result.Value)
+        //    {
+        //        var tmp = System.Threading.Interlocked.CompareExchange(ref OnSaved, null, null);
+        //        if (tmp != null)
+        //        {
+        //            tmp(this, EventArgs.Empty);
+        //        }
+        //    }
+        //}
     }
 }

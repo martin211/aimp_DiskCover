@@ -1,0 +1,222 @@
+﻿<#@ template language="C#v4.5" debug="True" hostspecific="true" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension="cs" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Runtime.InteropServices" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+
+<# 
+    string ttpath = Host.ResolvePath("Localization.tt");
+    var langsPath = Path.Combine(Path.GetDirectoryName(ttpath), "langs");
+    var fi = new DirectoryInfo(langsPath).GetFiles("english.lng");
+    List<IniSection> sections = new List<IniSection>();
+
+    foreach (FileInfo f in fi)
+    {
+        var iniFile = new IniFile(f.FullName);
+        sections = iniFile.ParseFile();
+    }
+#>
+using AIMP.DiskCover.Core;
+using AIMP.SDK.Player;
+
+namespace AIMP.DiskCover
+{
+    internal class Localization
+    {
+		private class LocalizationManager
+		{
+			private static LocalizationManager _instance;
+			private readonly IAimpPlayer _player;
+
+			public static LocalizationManager Instance => _instance ?? (_instance = new LocalizationManager());
+
+			public LocalizationManager()
+			{
+				_player = DependencyResolver.Current.GetInstance<IAimpPlayer>();
+			}
+
+			public string GetLocalizedString(string term, string defaultValue = "")
+			{
+				var val = _player.MUIManager.GetValue(term);
+				return !string.IsNullOrWhiteSpace(val) 
+                    ? val 
+                    : (!string.IsNullOrEmpty(defaultValue) ? defaultValue : term);
+			}
+		}
+
+<#      PushIndent("\t\t");
+        ProcessSectionsKey(this, sections);
+
+        ProcessSectionsValues(this, sections);
+        ClearIndent();
+#>
+    }
+}
+<#+ 
+    private void ProcessSectionsKey(GeneratedTextTransformation transformation, List<IniSection> sections)
+    {
+        foreach (IniSection section in sections)
+        {
+            transformation.WriteLine("private const string " + section.SectionName.Replace(".", string.Empty) + "Key = \"" + section.SectionName + "\";");
+
+            if (section.ChildSections.Any())
+            {
+                ProcessSectionsKey(transformation, section.ChildSections);
+            }
+        }
+    }
+
+    private void ProcessSectionsValues(GeneratedTextTransformation transformation, List<IniSection> sections)
+    {
+        foreach (IniSection section in sections)
+        {
+            transformation.WriteLine($"public class {section.Key}");
+            transformation.WriteLine("{");
+            transformation.PushIndent("\t");
+
+            foreach(KeyValuePair<string, string> pair in section.Values)
+            {
+                transformation.WriteLine(Environment.NewLine);
+                var key = section.SectionName.Replace(".", "") + "Key";
+                transformation.WriteLine("/// <summary>");
+                transformation.WriteLine("/// " + pair.Value);
+                transformation.WriteLine("/// </summary>");
+				var tokenKey = "{" + key + "}\\\\" + pair.Key;
+				transformation.WriteLine($"public static string {pair.Key} => LocalizationManager.Instance.GetLocalizedString($\"{tokenKey}\");");
+            }
+
+            ProcessSectionsValues(transformation, section.ChildSections);
+
+            transformation.PopIndent();
+            transformation.WriteLine("}");
+        }
+    }
+#>
+
+<#+
+    public class IniSection
+    {
+        public IniSection()
+        {
+            ChildSections = new List<IniSection>();
+            Values = new Dictionary<string, string>();
+        }
+
+        public string Key { get; set; }
+        public string SectionName { get; set; }
+        public Dictionary<string, string> Values { get; set; }
+        public List<IniSection> ChildSections { get; set; }
+    }
+
+public class IniFile 
+{ 
+    string Path;
+
+    [DllImport("KERNEL32.DLL", EntryPoint = "GetPrivateProfileSectionW",
+    SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+    private static extern int GetPrivateProfileSection(string lpAppName, string lpReturnedString, int nSize, string lpFileName);
+
+    [DllImport("kernel32", CharSet = CharSet.Unicode)]
+    static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
+    
+    [DllImport("KERNEL32.DLL", EntryPoint = "GetPrivateProfileSectionNamesW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+    static extern int GetPrivateProfileSectionNames(string lpReturnedString, int nSize, string lpFileName);
+
+    public IniFile(string IniPath)
+    {
+        Path = new FileInfo(IniPath).FullName.ToString();
+    }
+
+    public List<string> GetSections()
+    {
+        string returnString = new string(' ', 65536);
+        GetPrivateProfileSectionNames(returnString, 65536, Path);
+        List<string> result = new List<string>(returnString.Split('\0'));
+        result.RemoveRange(result.Count - 2, 2);
+        return result;
+    }
+
+    public Dictionary<string, string> GetKeyValuesPair(string section)
+    {
+        List<string> tlist = GetKeyValues(section);
+        Dictionary<string, string> tdic = new Dictionary<string, string>();
+        if (tlist == null || !tlist.Any()) return tdic;
+        foreach (var str in tlist)
+        {
+            if (string.IsNullOrEmpty(str)) continue;
+            var vl = str.Split('=');
+            tdic.Add(vl[0], vl[1]);
+        }
+        return tdic;
+    }
+
+    public List<string> GetKeyValues(string section)
+    {
+        string returnString = new string(' ', 65536);
+        GetPrivateProfileSection(section, returnString, 65536, Path);
+        List<string> result = new List<string>(returnString.Split('\0'));
+        result.RemoveRange(result.Count - 2, 2);
+        return result;
+    }
+
+        public List<IniSection> ParseFile()
+        {
+            var sections = GetSections();
+
+            var result = new List<IniSection>();
+
+            foreach (var section in sections)
+            {
+                var s = section.Split('.');
+
+                IniSection sec = null;
+                if (result.Any(c => c.Key == s[0]))
+                {
+                    sec = result.First(c => c.Key == s[0]);
+                }
+                else
+                {
+                    sec = new IniSection()
+                    {
+                        Key = s[0],
+                        SectionName = section
+                    };
+
+                    sec.Values = GetKeyValuesPair(section);
+                    result.Add(sec);
+                }
+
+                if (s.Length > 1)
+                {
+                    int i = 1;
+                    while (i != s.Length)
+                    {
+                        IniSection nsec;
+                        if (sec.ChildSections.Any(c => c.Key == s[i]))
+                        {
+                            nsec = sec.ChildSections.First(c => c.Key == s[i]);
+                        }
+                        else
+                        {
+                            nsec = new IniSection()
+                            {
+                                Key = s[i],
+                                SectionName = section
+                            };
+                            nsec.Values = GetKeyValuesPair(section);
+                            sec.ChildSections.Add(nsec);
+                        }
+
+                        sec = nsec;
+                        i++;
+                    }
+                }
+            }
+            return result;
+        }
+}
+#>

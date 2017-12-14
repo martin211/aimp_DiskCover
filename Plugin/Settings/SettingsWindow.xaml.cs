@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using AIMP.DiskCover;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 
-namespace DiskCover.Settings
+namespace AIMP.DiskCover.Settings
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class SettingsWindow : UserControl
     {
         public ObservableCollection<FindRule> AppliedRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => r.Enabled));
         public ObservableCollection<FindRule> AvailableRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => !r.Enabled));
@@ -35,6 +26,8 @@ namespace DiskCover.Settings
 
                 lbApplied.ItemsSource = AppliedRules;
                 lbAvailable.ItemsSource = AvailableRules;
+
+                DataContext = new SettingsViewModel();
             }
             catch (Exception ex)
             {

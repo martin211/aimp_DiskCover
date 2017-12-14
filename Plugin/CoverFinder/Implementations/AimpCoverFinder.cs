@@ -90,7 +90,7 @@
                     _resetEvent.Set();
                 };
 
-            player.AlbumArtManager.GetImage(player.CurrentFileInfo, AimpFingCovertArtType.None, null);
+            player.AlbumArtManager.GetImage(player.CurrentFileInfo, AimpFindCovertArtType.None, null);
             _resetEvent.WaitOne(new TimeSpan(0, 0, 0, 20));
            
             return Result;

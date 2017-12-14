@@ -1,4 +1,6 @@
-﻿namespace AIMP.DiskCover.Settings
+﻿using AIMP.SDK.Options;
+
+namespace AIMP.DiskCover.Settings
 {
     using System;
 
@@ -23,7 +25,7 @@
 
         public string GetName()
         {
-            return LocalizedData.AIMPMenuItemName;
+            return Localization.DiskCover.Title;
         }
 
         public IntPtr CreateFrame(IntPtr parentWindow)
@@ -44,9 +46,8 @@
             _settingsWindow = null;
         }
 
-        public void Notification(int id)
+        public void Notification(OptionsDialogFrameNotificationType id)
         {
-            
         }
 
         #endregion
