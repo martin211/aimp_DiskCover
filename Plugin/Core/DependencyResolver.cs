@@ -5,27 +5,26 @@ using CommonServiceLocator;
 
 namespace AIMP.DiskCover.Core
 {
-    internal class DependencyResolver : ServiceLocatorImplBase
+    public abstract class DependencyResolver
     {
-        private IEnumerable<object> _objects;
-        private static DependencyResolver _instance;
-        public static DependencyResolver Current => _instance ?? (_instance = new DependencyResolver());
+        /// <summary>
+        ///     The current instance of the <see cref="DependencyResolver" />
+        /// </summary>
+        public static DependencyResolver Current { get; set; }
 
-        protected override object DoGetInstance(Type serviceType, string key)
-        {
-            return key == null
-                ? _objects.First(serviceType.IsInstanceOfType)
-                : _objects.First(o => serviceType.IsInstanceOfType(o) && Equals(key, o.GetType().FullName));
-        }
+        public abstract DependencyResolver GetChildrenContainer { get; }
 
-        protected override IEnumerable<object> DoGetAllInstances(Type serviceType)
-        {
-            return _objects.Where(serviceType.IsInstanceOfType);
-        }
+        /// <summary>
+        ///     Resolves the service.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns></returns>
+        public abstract object ResolveService(Type serviceType);
 
-        public void Register(IEnumerable<object> objects)
-        {
-            _objects = objects;
-        }
+        /// <summary>
+        ///     Resolves the service.
+        /// </summary>
+        /// <typeparam name="TServiceType">The type of the service type.</typeparam>
+        public abstract TServiceType ResolveService<TServiceType>();
     }
 }

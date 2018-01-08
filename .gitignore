@@ -1,3 +1,6 @@
+packages
+node_modules
+
 # Compiled Object files
 *.slo
 *.lo
@@ -36,3 +39,4 @@ obj
 bin
 Debug
 Release
+.vs

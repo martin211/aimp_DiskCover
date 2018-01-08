@@ -12,77 +12,36 @@ namespace AIMP.DiskCover.Settings
     /// </summary>
     public partial class SettingsWindow : UserControl
     {
-        public ObservableCollection<FindRule> AppliedRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => r.Enabled));
-        public ObservableCollection<FindRule> AvailableRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => !r.Enabled));
+        //public ObservableCollection<FindRule> AppliedRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => r.Enabled));
+        //public ObservableCollection<FindRule> AvailableRules = new ObservableCollection<FindRule>(Config.Instance.Rules.Where(r => !r.Enabled));
 
         public SettingsWindow()
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                chShowInTaskbar.IsChecked = Config.Instance.ShowInTaskbar;
-                chEnableHotkeys.IsChecked = Config.Instance.EnableHotKeys;
+            //try
+            //{
+                
 
-                lbApplied.ItemsSource = AppliedRules;
-                lbAvailable.ItemsSource = AvailableRules;
+            //    chShowInTaskbar.IsChecked = Config.Instance.ShowInTaskbar;
+            //    chEnableHotkeys.IsChecked = Config.Instance.EnableHotKeys;
 
-                DataContext = new SettingsViewModel();
-            }
-            catch (Exception ex)
-            {
+            //    lbApplied.ItemsSource = AppliedRules;
+            //    lbAvailable.ItemsSource = AvailableRules;
+
+            //    DataContext = new SettingsViewModel();
+            //}
+            //catch (Exception ex)
+            //{
                 
                 
-            }
-        }
-        
-        private void bSave_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-
-            Config.Instance.ShowInTaskbar = chShowInTaskbar.IsChecked ?? false;
-            Config.Instance.EnableHotKeys = chEnableHotkeys.IsChecked ?? false;
-
-            // User's rules choise is already saved by button handlers.
-            
-            Config.Instance.StoreChanges();
-        }
-
-        private void bCancel_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
-
-        private void Apply_Click(object sender, RoutedEventArgs e)
-        {
-            if (lbAvailable.SelectedItem == null) 
-                return;
-
-            FindRule rule = (FindRule)lbAvailable.SelectedItem;
-            rule.Enabled = true;
-
-            AvailableRules.Remove(rule);
-            AppliedRules.Add(rule);
-        }
-
-        private void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            if (lbApplied.SelectedItem == null) 
-                return;
-
-            FindRule rule = (FindRule)lbApplied.SelectedItem;
-            rule.Enabled = false;
-
-            AppliedRules.Remove(rule);
-            AvailableRules.Add(rule);
+            //}
         }
     }
 
     [ValueConversion(typeof(Object), typeof(Boolean))]
     public class ObjectToBooleanConverter : IValueConverter
     {
-        #region IValueConverter Members
-
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return value != null;
@@ -92,7 +51,5 @@ namespace AIMP.DiskCover.Settings
         {
             throw new NotSupportedException();
         }
-
-        #endregion
     }
 }

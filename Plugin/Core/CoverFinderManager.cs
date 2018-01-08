@@ -5,21 +5,18 @@ using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows;
-using AIMP.DiskCover.Resources;
 using System.Drawing;
 using System.Threading;
+using AIMP.DiskCover.LastFM;
+using AIMP.DiskCover.Settings;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover
 {
-    using AIMP.DiskCover.LastFM;
-
     //using AIMP.DiskCover.LastFM;
 
-    public class CoverFinderManager
+    public class CoverFinderManager : ICoverFinderManager
     {
         /// <summary>
         /// Unique identifier of this request. It is used to distinguish
@@ -28,22 +25,17 @@ namespace AIMP.DiskCover
         /// </summary>
         private Guid _currentRequestId;
 
-        /// <summary>
-        /// The synchronisation object.
-        /// </summary>
-        private readonly Object _syncRoot = new Object();
-
         private readonly IAimpPlayer _aimpPlayer;
-
         private readonly ILogger _logger;
+        private readonly IPluginSettings _config;
 
         /// <summary>
         /// Creates an instance of <see cref="CoverFinderManager"/> class.
         /// </summary>
         /// <param name="aimpPlayer">AIMP player object.</param>
-        public CoverFinderManager(IAimpPlayer aimpPlayer, ILogger logger)
+        public CoverFinderManager(IAimpPlayer aimpPlayer, ILogger logger, IPluginSettings settings)
         {
-            Contract.Requires(aimpPlayer != null);
+            _config = settings;
 
             var aggregateCatalog = new AggregateCatalog();
             var assemblyCatalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
@@ -73,38 +65,28 @@ namespace AIMP.DiskCover
         /// </summary>
         public event EventHandler<FinderEvent> EndRequest;
 
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_aimpPlayer != null);
-            Contract.Invariant(CoverModules != null);
-            Contract.Invariant(CoverModules.Count > 0, "No cover image loaders are found.");
-        }
-
         /// <summary>
         /// Starts loading a new cover image.
         /// The result will come in an event arguments.
         /// </summary>
-        public async Task StartLoadingBitmap()
+        public void StartLoadingBitmap()
         {
             Guid initialRequestId;
 
             initialRequestId = _currentRequestId = Guid.NewGuid();
             OnBeginRequest(this, null);
 
-            var token = new CancellationTokenSource();
-            var task = Task.Run(() => LoadImageWorkItem(initialRequestId, token.Token), token.Token);
-            if (await Task.WhenAny(task, Task.Delay(10000, token.Token)) == task)
+            var coverArt = LoadImageWorkItem(initialRequestId);
+            if (coverArt != null)
             {
                 if (initialRequestId == _currentRequestId)
                 {
-                    OnEndRequest(this, new FinderEvent(task.Result));
+                    OnEndRequest(this, new FinderEvent(coverArt));
                 }
             }
             else
             {
                 // TIMEOUT
-                token.Cancel();
                 OnEndRequest(this, new FinderEvent(null));
             }
         }
@@ -114,7 +96,7 @@ namespace AIMP.DiskCover
         /// and tries to load the cover image.
         /// </summary>
         /// <param name="initialRequestId">An identifier of current search session.</param>
-        private Bitmap LoadImageWorkItem(Object initialRequestId, CancellationToken token)
+        private Bitmap LoadImageWorkItem(Object initialRequestId)
         {
             Bitmap result = null;
 
@@ -126,23 +108,19 @@ namespace AIMP.DiskCover
 
             try
             {
-                _logger.Write(string.Format("Album: {0};\tArtist: {1};\tTrack: {2}", _aimpPlayer.CurrentFileInfo.Album, _aimpPlayer.CurrentFileInfo.Artist, _aimpPlayer.CurrentFileInfo.FileName));
+                _logger.Write(
+                    $"Album: {_aimpPlayer.CurrentFileInfo.Album};\tArtist: {_aimpPlayer.CurrentFileInfo.Artist};\tTrack: {_aimpPlayer.CurrentFileInfo.FileName}");
 
                 // This object prevents race conditions when the search 
                 // is in progress and at the same time AIMP is changing a track.
                 var trackInfo = new TrackInfo(_aimpPlayer);
 
-                var enabledRules = Config.Instance.Rules.Where(r => r.Enabled).ToArray();
+                var enabledRules = _config.AppliedRules.ToList();
 
-                for (Int32 i = 0; i < enabledRules.Length; i++)
+                for (var i = 0; i < enabledRules.Count; i++)
                 {
-                    if (token.IsCancellationRequested)
-                    {
-                        return null;
-                    }
-
                     FindRule rule;
-                    String moduleName;
+                    string moduleName;
 
                     // If it is a local audio file - use ordinary set of rules.
                     if (!trackInfo.IsStream)
@@ -155,12 +133,12 @@ namespace AIMP.DiskCover
                     else
                     {
                         // If Last.Fm is disabled - stop iterating, we can't get the cover image.
-                        if (!enabledRules.Any(r => r.Module == LastFmFinder.ModuleName))
+                        if (enabledRules.All(r => r.Module != LastFmFinder.ModuleName))
                         {
                             break;
                         }
 
-                        i = enabledRules.Length; // Prevent further iterations.
+                        i = enabledRules.Count; // Prevent further iterations.
 
                         rule = null;
                         moduleName = LastFmFinder.ModuleName;
@@ -176,11 +154,11 @@ namespace AIMP.DiskCover
 
                     if (result != null)
                     {
-                        _logger.Write(string.Format("Module: {0}\tCover art has been found", moduleName));
+                        _logger.Write($"Module: {moduleName}\tCover art has been found");
                         break;
                     }
                     {
-                        _logger.Write(string.Format("Module: {0}\tCover art has not been found", moduleName));
+                        _logger.Write($"Module: {moduleName}\tCover art has not been found");
                     }
                 }
 
@@ -188,13 +166,7 @@ namespace AIMP.DiskCover
             }
             catch (Exception ex)
             {
-#if DEBUG
-                MessageBox.Show(
-                    LocalizedData.ErrorOnCoverImageSearch + ex.Message,
-                    LocalizedData.PluginName,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-#endif
+                System.Diagnostics.Debugger.Break();
             }
 
             return result;
@@ -203,15 +175,13 @@ namespace AIMP.DiskCover
         private void OnBeginRequest(object sender, EventArgs e)
         {
             EventHandler temp = Interlocked.CompareExchange(ref BeginRequest, null, null);
-            if (temp != null)
-                temp(sender, e);
+            temp?.Invoke(sender, e);
         }
 
         private void OnEndRequest(object sender, FinderEvent e)
         {
             EventHandler<FinderEvent> temp = Interlocked.CompareExchange(ref EndRequest, null, null);
-            if (temp != null)
-                temp(sender, e);
+            temp?.Invoke(sender, e);
         }
     }
 }

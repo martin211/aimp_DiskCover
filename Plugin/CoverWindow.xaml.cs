@@ -1,4 +1,6 @@
-﻿using AIMP.DiskCover.Core;
+﻿using System.Runtime.InteropServices;
+using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Settings;
 
 namespace AIMP.DiskCover
 {
@@ -20,6 +22,11 @@ namespace AIMP.DiskCover
     public partial class CoverWindow
     {
         private Bitmap _coverImage;
+        private IPluginSettings _settings;
+        private IPluginEventsExecutor _pluginEventsExecutor;
+
+        [DllImport("msvcr120.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int _fpreset();
 
         /// <summary>
         /// The WPF image element that shows AIMP's bitmap.
@@ -32,14 +39,21 @@ namespace AIMP.DiskCover
             }
         }
 
-        public CoverWindow()
+        public CoverWindow(IPluginSettings settings, IPluginEventsExecutor pluginEventsExecutor)
+        {
+            _settings = settings;
+            _pluginEventsExecutor = pluginEventsExecutor;
+            Init();
+        }
+
+        private void Init()
         {
             try
             {
+                _fpreset();
                 InitializeComponent();
 
-                ShowInTaskbar = Config.Instance.ShowInTaskbar;
-                Config.Instance.Saved += ConfigChangedHandler;
+                ShowInTaskbar = _settings.ShowInTaskbar;
 
                 // Set maximum allowed sizes of the window.
                 MaxWidth = System.Windows.SystemParameters.WorkArea.Width;
@@ -56,14 +70,12 @@ namespace AIMP.DiskCover
             }
             catch (Exception ex)
             {
-                
-                
             }
         }
-        
+
         void ConfigChangedHandler(object sender, EventArgs e)
         {
-            ShowInTaskbar = Config.Instance.ShowInTaskbar;
+            ShowInTaskbar = _settings.ShowInTaskbar;
         }
 
         public void ChangeCoverImage(Bitmap image)
@@ -157,22 +169,22 @@ namespace AIMP.DiskCover
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Config.Instance.Width = Width;
-            Config.Instance.Height = Height;
-            Config.Instance.Left = Left;
-            Config.Instance.Top = Top;
-            
+            _settings.Width = Width;
+            _settings.Height = Height;
+            _settings.Left = Left;
+            _settings.Top = Top;
+
             ResizeImage();
         }
         
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Config.Instance.Width = Width;
-            Config.Instance.Height = Height;
-            Config.Instance.Left = Left;
-            Config.Instance.Top = Top;
+            _settings.Width = Width;
+            _settings.Height = Height;
+            _settings.Left = Left;
+            _settings.Top = Top;
 
-            Config.Instance.StoreChanges();
+            _pluginEventsExecutor.OnSaveConfig();
         }
 
         private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -207,7 +219,7 @@ namespace AIMP.DiskCover
         
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (Config.Instance.EnableHotKeys)
+            if (_settings.EnableHotKeys)
             {
                 if ((e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt) && e.IsDown)
                 {
@@ -232,7 +244,7 @@ namespace AIMP.DiskCover
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if (Config.Instance.EnableHotKeys)
+            if (_settings.EnableHotKeys)
             {
                 if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
                 {

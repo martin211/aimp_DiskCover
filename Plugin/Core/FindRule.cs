@@ -39,7 +39,7 @@
         /// <summary>
         /// Creates an instance of <see cref="FindRule"/> class.
         /// </summary>
-        private FindRule ()
+        public FindRule ()
         {
             Enabled = true;
         }
@@ -53,12 +53,12 @@
         /// <summary>
         /// Gets or sets name of the Module that handles this type of rule.
         /// </summary>
-        public String Module { get; private set; }
+        public String Module { get; set; }
 
         /// <summary>
         /// Gets or sets Rule.
         /// </summary>
-        public CoverRuleType Rule { get; private set; }
+        public CoverRuleType Rule { get; set; }
 
         /// <summary>
         /// Returns a <see cref="String"/> which represents a user-friendly instance name.

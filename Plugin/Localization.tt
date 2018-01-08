@@ -36,7 +36,7 @@ namespace AIMP.DiskCover
 
 			public LocalizationManager()
 			{
-				_player = DependencyResolver.Current.GetInstance<IAimpPlayer>();
+				_player = DependencyResolver.Current.ResolveService<IAimpPlayer>();
 			}
 
 			public string GetLocalizedString(string term, string defaultValue = "")
