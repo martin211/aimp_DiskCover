@@ -94,20 +94,30 @@ namespace AIMP.DiskCover.Settings
 
         public double Top
         {
-            get => _top;
+            get => _pluginSettings.Top;
             set
             {
-                _top = value;
+                _pluginSettings.Top = value;
                 OnPropertyChanged();
             }
         }
 
         public bool EnableHotKeys
         {
-            get => _enableHotKeys;
+            get => _pluginSettings.EnableHotKeys;
             set
             {
-                _enableHotKeys = value;
+                _pluginSettings.EnableHotKeys = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ShowInTaskbar
+        {
+            get => _pluginSettings.ShowInTaskbar;
+            set
+            {
+                _pluginSettings.ShowInTaskbar = value;
                 OnPropertyChanged();
             }
         }
@@ -187,6 +197,9 @@ namespace AIMP.DiskCover.Settings
 
         public string SaveButtonText => Localization.DiskCover.Options.Save;
 
+        public string ResizeModeHotkeys => Localization.DiskCover.Options.EnableResizeModeHotkeys;
+
+        public string DisplayIconInTaskbar => Localization.DiskCover.Options.DisplayIconInTaskbar;
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

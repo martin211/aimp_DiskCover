@@ -32,7 +32,6 @@ namespace AIMP.DiskCover
         /// <summary>
         /// Creates an instance of <see cref="CoverFinderManager"/> class.
         /// </summary>
-        /// <param name="aimpPlayer">AIMP player object.</param>
         public CoverFinderManager(IAimpPlayer aimpPlayer, ILogger logger, IPluginSettings settings)
         {
             _config = settings;

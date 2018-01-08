@@ -1,15 +1,16 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Windows;
-using LastFmLib.General;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using AIMP.SDK.Player;
+using IF.Lastfm.Core.Api;
+using IF.Lastfm.Core.Api.Enums;
 
 namespace AIMP.DiskCover.LastFM
 {
-    using AIMP.SDK.Player;
-
-    using LastFmLib.API20.Types;
-
     [Export(typeof(ICoverFinder))]
     public class LastFmFinder : ICoverFinder
     {
@@ -17,6 +18,8 @@ namespace AIMP.DiskCover.LastFM
 
         private const string ApiKey = "f5610848fef2dc0abd449e6268acb1d2";
         private const string SecretKey = "a5008c1485f6639a9c4edfc7cc773e03";
+
+        private LastfmClient _client;
 
         public String Name
         {
@@ -28,7 +31,7 @@ namespace AIMP.DiskCover.LastFM
         /// </summary>
         public LastFmFinder()
         {
-            LastFmLib.API20.Settings20.AuthData = new AuthData(new MD5Hash(ApiKey), new MD5Hash(SecretKey));
+            _client = new LastfmClient(ApiKey, SecretKey);
         }
 
         /// <summary>
@@ -49,24 +52,13 @@ namespace AIMP.DiskCover.LastFM
             {
                 if (!trackInfo.IsStream)
                 {
-                    var n = new LastFmLib.API20.Album.AlbumGetInfo(trackInfo.Artist, trackInfo.Album);
-                    n.Start();
-                    if (n.Succeeded)
+                    var response = _client.Album.GetInfoAsync(trackInfo.Artist, trackInfo.Album);
+                    response.Wait();
+                    if (response.IsCompleted && response.Result.Status == LastResponseStatus.Successful)
                     {
-                        if (n.Result.HasAnyImage)
+                        if (response.Result.Content != null && response.Result.Content.Images.Any())
                         {
-                            result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Original);
-                            if (result == null)
-                            {
-                                if (n.Result.ImageExtraLarge != null)
-                                    result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.ExtraLarge);
-                                else if (n.Result.ImageLarge != null)
-                                    result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Large);
-                                else if (n.Result.ImageMedium != null)
-                                    result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Medium);
-                                else if (n.Result.ImageSmall != null)
-                                    result = n.Result.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Small);
-                            }
+                            result = DownloadImage(response.Result.Content.Images.Largest);
                         }
                     }
                 }
@@ -75,29 +67,18 @@ namespace AIMP.DiskCover.LastFM
                     // get bitmap for radio
                     String[] s = String.IsNullOrEmpty(trackInfo.Artist)
                         ? trackInfo.Title.Split('-')
-                        : new string[] { trackInfo.Artist, trackInfo.Title };
+                        : new[] { trackInfo.Artist, trackInfo.Title };
 
                     if (s.Length > 1)
                     {
-                        var n = new LastFmLib.API20.Tracks.TrackGetInfo(s[0].Trim(), s[1].Trim());
-                        n.Start();
-                        if (n.Succeeded)
+                        var n = _client.Track.GetInfoAsync(s[0].Trim(), s[1].Trim(), string.Empty);
+                        n.Wait();
+                        if (n.IsCompleted)
                         {
-                            var info = (TrackInformation)n.Result;
-                            if (info.Album != null && info.Album.HasAnyImage)
+                            var info = n.Result.Content;
+                            if (info.Images.Any())
                             {
-                                result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Original);
-                                if (result == null)
-                                {
-                                    if (info.Album.ImageExtraLarge != null)
-                                        result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.ExtraLarge);
-                                    else if (info.Album.ImageLarge != null)
-                                        result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Large);
-                                    else if (n.Result.ImageMedium != null)
-                                        result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Medium);
-                                    else if (n.Result.ImageSmall != null)
-                                        result = info.Album.DownloadImage(LastFmLib.API20.modEnums.ImageSize.Small);
-                                }
+                                result = DownloadImage(info.Images.Largest);
                             }
                         }
                     }
@@ -116,6 +97,54 @@ namespace AIMP.DiskCover.LastFM
         public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
         {
             return GetBitmap(new TrackInfo(player), concreteRule);
+        }
+
+        private Bitmap DownloadImage(Uri uri)
+        {
+            Bitmap bitmap;
+            if (uri == null)
+            {
+                bitmap = null;
+            }
+            else
+            {
+                Stream imageStream = GetImageStream(uri);
+                if (imageStream == null)
+                {
+                    bitmap = null;
+                }
+                else
+                {
+                    GC.Collect();
+                    bitmap = new Bitmap(imageStream);
+                }
+            }
+            return bitmap;
+        }
+
+        private static Stream GetImageStream(Uri url)
+        {
+            Stream stream;
+            if ((object)url == null)
+            {
+                stream = (Stream)null;
+            }
+            else
+            {
+                WebRequest webRequest = WebRequest.CreateDefault(url);
+                webRequest.Method = "GET";
+                WebResponse response;
+                try
+                {
+                    response = webRequest.GetResponse();
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+                stream = response.GetResponseStream();
+            }
+            return stream;
         }
     }
 }

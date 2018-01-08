@@ -159,7 +159,7 @@ namespace AIMP.DiskCover.Core
 
         private void PlayerOnTrackChanged(object sender, EventArgs eventArgs)
         {
-            RequestFreshCoverImage();
+           // RequestFreshCoverImage();
         }
 
         private void PlayerOnStateChanged(object sender, StateChangedEventArgs stateChangedEventArgs)

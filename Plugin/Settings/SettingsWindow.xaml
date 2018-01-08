@@ -15,7 +15,8 @@
         <TabControl>
             <TabItem Header="{Binding GeneralTabText}">
                 <StackPanel Margin="5">
-                    <CheckBox x:Name="chEnableHotkeys" IsChecked="{Binding EnableHotKeys, Mode=TwoWay}" Content="{ext:Localizer Key='Settings.EnableResizeModeHotkeys'}" Margin="0 2"/>
+                    <CheckBox IsChecked="{Binding EnableHotKeys, Mode=TwoWay}" Content="{Binding ResizeModeHotkeys}" Margin="0 2"/>
+                    <CheckBox IsChecked="{Binding ShowInTaskbar, Mode=TwoWay}" Content="{Binding DisplayIconInTaskbar}" Margin="0 2"/>
                 </StackPanel>
             </TabItem>
 
