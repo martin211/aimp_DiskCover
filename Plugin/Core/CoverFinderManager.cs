@@ -11,6 +11,7 @@ using AIMP.DiskCover.LastFM;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
+using AIMP.SDK.Threading;
 
 namespace AIMP.DiskCover
 {
@@ -68,13 +69,12 @@ namespace AIMP.DiskCover
         /// Starts loading a new cover image.
         /// The result will come in an event arguments.
         /// </summary>
-        public void StartLoadingBitmap()
+        public void StartLoadingBitmap(UIntPtr taskId)
         {
             Guid initialRequestId;
 
             initialRequestId = _currentRequestId = Guid.NewGuid();
             OnBeginRequest(this, null);
-
             var coverArt = LoadImageWorkItem(initialRequestId);
             if (coverArt != null)
             {
@@ -88,6 +88,8 @@ namespace AIMP.DiskCover
                 // TIMEOUT
                 OnEndRequest(this, new FinderEvent(null));
             }
+
+            _aimpPlayer.ServiceThreadPool.Cancel(taskId, AimpServiceThreadPoolType.None);
         }
 
         /// <summary>
