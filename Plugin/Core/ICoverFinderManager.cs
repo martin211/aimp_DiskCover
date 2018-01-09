@@ -18,6 +18,6 @@ namespace AIMP.DiskCover
         /// Starts loading a new cover image.
         /// The result will come in an event arguments.
         /// </summary>
-        void StartLoadingBitmap();
+        void StartLoadingBitmap(UIntPtr taskId);
     }
 }

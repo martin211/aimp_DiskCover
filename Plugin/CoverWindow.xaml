@@ -6,17 +6,17 @@
         mc:Ignorable="d" 
         WindowStyle="None"
         WindowState="Normal" 
-        MinHeight="200"         
-        MinWidth="200" 
-        Height="300" 
+        MinHeight="200"
+        MinWidth="200"
+        Height="300"
         Width="300"
-        ShowInTaskbar="true" 
-        AllowsTransparency="True" 
-        Background="Transparent" 
-        ResizeMode="NoResize" 
+        ShowInTaskbar="true"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
         SizeChanged="Window_SizeChanged"
-        Closing="Window_Closing"          
-        KeyDown="Window_KeyDown" 
+        Closing="Window_Closing"
+        KeyDown="Window_KeyDown"
         KeyUp="Window_KeyUp"
 		Loaded="Window_Loaded"
 		SourceInitialized="Window_SourceInitialized">
@@ -68,9 +68,9 @@
             </Setter>
         </Style>
     </Window.Resources>
-    
+
     <Border Width="Auto" Height="Auto" Name="windowFrame" BorderBrush="#395984" BorderThickness="1" CornerRadius="5,5,5,5">
-        
+
         <Border.Background>
             <LinearGradientBrush>
                 <LinearGradientBrush.GradientStops>
@@ -81,7 +81,7 @@
                 </LinearGradientBrush.GradientStops>
             </LinearGradientBrush>
         </Border.Background>
-                
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2"    />
@@ -103,82 +103,82 @@
                      MouseUp="ResizeGripMouseUp" />
 
             <DockPanel LastChildFill="True" Name="dockPanel" Grid.Row="1" Grid.Column="1" Background="Transparent" MouseMove="Window_MouseMove">
-                
-                <DockPanel.Resources>
-                <ControlTemplate x:Key="loadingAnimation">
-                    <Image x:Name="content" Opacity="1" Width="20" >
-                        <Image.Source>
-                            <DrawingImage>
-                                <DrawingImage.Drawing>
-                                    <DrawingGroup>
-                                        <GeometryDrawing Brush="Transparent">
-                                            <GeometryDrawing.Geometry>
-                                                <RectangleGeometry Rect="0,0,1,1"/>
-                                            </GeometryDrawing.Geometry>
-                                        </GeometryDrawing>
-                                        <DrawingGroup>
-                                            <DrawingGroup.Transform>
-                                                <RotateTransform x:Name="angle" Angle="0" CenterX="0.5" CenterY="0.5"/>
-                                            </DrawingGroup.Transform>
-                                            <GeometryDrawing>
-                                                <GeometryDrawing.Pen>
-                                                    <Pen Brush="Green" Thickness="0.1"/>
-                                                </GeometryDrawing.Pen>
-                                                <GeometryDrawing.Geometry>
-                                                    <PathGeometry>
-                                                        <PathFigure StartPoint="0.9,0.5">
-                                                            <ArcSegment Point="0.5,0.1" RotationAngle="90" SweepDirection="Clockwise" IsLargeArc="True" Size="0.4,0.4"/>
-                                                        </PathFigure>
-                                                    </PathGeometry>
-                                                </GeometryDrawing.Geometry>
-                                            </GeometryDrawing>
-                                            <GeometryDrawing Brush="Green">
-                                                <GeometryDrawing.Geometry>
-                                                    <PathGeometry>
-                                                        <PathFigure StartPoint="0.5,0">
-                                                            <LineSegment Point="0.7,0.1" />
-                                                            <LineSegment Point="0.5,0.2" />
-                                                        </PathFigure>
-                                                    </PathGeometry>
-                                                </GeometryDrawing.Geometry>
-                                            </GeometryDrawing>
-                                        </DrawingGroup>
-                                    </DrawingGroup>
-                                </DrawingImage.Drawing>
-                            </DrawingImage>
-                        </Image.Source>
-                    </Image>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Visibility" Value="Visible">
 
-                            <Trigger.EnterActions>
-                                <BeginStoryboard Name="animation">
-                                    <Storyboard>
-                                        <DoubleAnimation From="0" To="359" Duration="0:0:5" RepeatBehavior="Forever"
+                <DockPanel.Resources>
+                    <ControlTemplate x:Key="loadingAnimation">
+                        <Image x:Name="content" Opacity="1" Width="20" >
+                            <Image.Source>
+                                <DrawingImage>
+                                    <DrawingImage.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Brush="Transparent">
+                                                <GeometryDrawing.Geometry>
+                                                    <RectangleGeometry Rect="0,0,1,1"/>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <RotateTransform x:Name="angle" Angle="0" CenterX="0.5" CenterY="0.5"/>
+                                                </DrawingGroup.Transform>
+                                                <GeometryDrawing>
+                                                    <GeometryDrawing.Pen>
+                                                        <Pen Brush="Green" Thickness="0.1"/>
+                                                    </GeometryDrawing.Pen>
+                                                    <GeometryDrawing.Geometry>
+                                                        <PathGeometry>
+                                                            <PathFigure StartPoint="0.9,0.5">
+                                                                <ArcSegment Point="0.5,0.1" RotationAngle="90" SweepDirection="Clockwise" IsLargeArc="True" Size="0.4,0.4"/>
+                                                            </PathFigure>
+                                                        </PathGeometry>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                                <GeometryDrawing Brush="Green">
+                                                    <GeometryDrawing.Geometry>
+                                                        <PathGeometry>
+                                                            <PathFigure StartPoint="0.5,0">
+                                                                <LineSegment Point="0.7,0.1" />
+                                                                <LineSegment Point="0.5,0.2" />
+                                                            </PathFigure>
+                                                        </PathGeometry>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingGroup>
+                                    </DrawingImage.Drawing>
+                                </DrawingImage>
+                            </Image.Source>
+                        </Image>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Visibility" Value="Visible">
+
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Name="animation">
+                                        <Storyboard>
+                                            <DoubleAnimation From="0" To="359" Duration="0:0:5" RepeatBehavior="Forever"
                                                  Storyboard.TargetName="angle" Storyboard.TargetProperty="Angle"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <StopStoryboard BeginStoryboardName="animation"/>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </DockPanel.Resources>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="animation"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </DockPanel.Resources>
 
                 <Control Name="loading" Template="{StaticResource loadingAnimation}" Visibility="Hidden" />
-                
+
                 <Image 
                     HorizontalAlignment="Center" 
                     Name="coverImage" 
                     Stretch="Fill" 
-                    VerticalAlignment="Center"                    
+                    VerticalAlignment="Center"
                     
                     />
                 <!--MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"-->
-                
+
             </DockPanel>
         </Grid>
     </Border>

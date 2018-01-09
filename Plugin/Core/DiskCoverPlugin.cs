@@ -132,7 +132,6 @@ namespace AIMP.DiskCover.Core
             _coverWindow.Activate();
 
             RequestFreshCoverImage();
-            //this.Player.
             _coverWindow.Display();
         }
 
@@ -192,11 +191,13 @@ namespace AIMP.DiskCover.Core
 
             if (_player.State == AimpPlayerState.Playing)
             {
-                _player.ServiceSynchronizer.ExecuteInMainThread(new AimpTask(() =>
+                UIntPtr taskId = UIntPtr.Zero;
+                _player.ServiceThreadPool.Execute(new AimpTask(() =>
                 {
-                    _coverFinderManager.StartLoadingBitmap();
+                    _coverFinderManager.StartLoadingBitmap(taskId);
                     return AimpActionResult.Ok;
-                }), true);
+                }), out taskId);
+
             }
             else
             {
