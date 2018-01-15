@@ -1,10 +1,7 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using AIMP.SDK.FileManager;
 
 namespace AIMP.DiskCover
 {
-    using AIMP.SDK.Player;
-
     /// <summary>
     /// Container for data of various data of 
     /// a musical track which might be required by
@@ -12,39 +9,29 @@ namespace AIMP.DiskCover
     /// </summary>
     public class TrackInfo
     {
-        private IAimpPlayer _player;
+        public TrackInfo()
+        {
+        }
 
         /// <summary>
         /// Creates an instance of <see cref="TrackInfo"/> class.
         /// </summary>
-        /// <param name="player">An instance of AIMP player to load data from.</param>
-        public TrackInfo(IAimpPlayer player)
+        public TrackInfo(IAimpFileInfo trackInfo)
         {
-            Contract.Requires(player != null);
-            _player = player;
-
-            var trackInfo = player.CurrentFileInfo;          
-            //StreamType = player.CurrentPlayingInfo.StreamType;
-
-            IsStream = trackInfo.FileName.StartsWith("http") || trackInfo.FileName.StartsWith("https") || trackInfo.FileName.StartsWith("ftp") || trackInfo.FileName.Contains("://");
-
-            if (trackInfo != null)
-            {
-                Artist = trackInfo.Artist;
-                Album = trackInfo.Album;
-                Title = trackInfo.Title;
-                FileName = trackInfo.FileName;
-            }
+            Artist = trackInfo.Artist;
+            Album = trackInfo.Album;
+            Title = trackInfo.Title;
+            FileName = trackInfo.FileName;
         }
 
-        public bool IsStream { get; private set; }
+        public bool IsStream => FileName.StartsWith("http") || FileName.StartsWith("https") || FileName.StartsWith("ftp") || FileName.Contains("://");
 
-        public String Artist { get; private set; }
+        public string Artist { get; set; }
 
-        public String Album { get; private set; }
+        public string Album { get; set; }
         
-        public String Title { get; private set; }
+        public string Title { get; set; }
         
-        public String FileName { get; private set; }
+        public string FileName { get; set; }
     }
 }

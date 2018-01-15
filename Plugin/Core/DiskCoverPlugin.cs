@@ -2,6 +2,7 @@
 using System.Drawing;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK;
+using AIMP.SDK.AlbumArtManager;
 using AIMP.SDK.Logger;
 using AIMP.SDK.MenuManager;
 using AIMP.SDK.Options;
@@ -33,6 +34,7 @@ namespace AIMP.DiskCover.Core
         private readonly IAimpOptionsDialogFrame _dialogFrame;
         private readonly IPluginEventsExecutor _pluginEventsExecutor;
         private readonly IPluginEvents _pluginEvents;
+        private readonly IAimpExtensionAlbumArtCatalog _aimpExtensionAlbumArtCatalog;
         private IAimpMenuItem _menuItem;
         private bool _isChecked;
         private readonly ICoverFinderManager _coverFinderManager;
@@ -45,6 +47,7 @@ namespace AIMP.DiskCover.Core
             IPluginSettings settings,
             ILogger logger,
             IPluginEventsExecutor pluginEventsExecutor,
+            IAimpExtensionAlbumArtCatalog aimpExtensionAlbumArtCatalog,
             IPluginEvents pluginEvents,
             ICoverFinderManager coverFinderManager,
             IAimpOptionsDialogFrame dialogFrame)
@@ -56,6 +59,7 @@ namespace AIMP.DiskCover.Core
             _pluginEventsExecutor = pluginEventsExecutor;
             _pluginEvents = pluginEvents;
             _coverFinderManager = coverFinderManager;
+            _aimpExtensionAlbumArtCatalog = aimpExtensionAlbumArtCatalog;
         }
 
         public void Initialize()
@@ -63,6 +67,7 @@ namespace AIMP.DiskCover.Core
             _logger.Write("DiskCover: Initialize plugin");
 
             _player.Core.RegisterExtension(_dialogFrame);
+            _player.Core.RegisterExtension(_aimpExtensionAlbumArtCatalog);
 
             InitMenu();
 
@@ -140,13 +145,15 @@ namespace AIMP.DiskCover.Core
             _coverWindow.Dispatcher.Invoke(new Action(_coverWindow.BeginLoadImage));
         }
 
-        private void OnEndFindCoverRequest(object s, FinderEvent e)
+        private void OnEndFindCoverRequest(UIntPtr aimpTaskId, Bitmap coverArt)
         {
             // if player is not playing, no need to apply search results.
             if (_player.State == AimpPlayerState.Playing)
             {
-                UpdateImage(e.CoverBitmap);
+                UpdateImage(coverArt);
             }
+
+            _player.ServiceThreadPool.Cancel(aimpTaskId, AimpServiceThreadPoolType.None);
         }
 
         private void UpdateImage(Bitmap newImage)
@@ -194,10 +201,9 @@ namespace AIMP.DiskCover.Core
                 UIntPtr taskId = UIntPtr.Zero;
                 _player.ServiceThreadPool.Execute(new AimpTask(() =>
                 {
-                    _coverFinderManager.StartLoadingBitmap(taskId);
+                    _coverFinderManager.FindCoverImageAsync(taskId);
                     return AimpActionResult.Ok;
                 }), out taskId);
-
             }
             else
             {

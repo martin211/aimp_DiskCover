@@ -1,29 +1,20 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using AIMP.SDK.FileManager;
+using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover
 {
-    using AIMP.SDK.Player;
-
     public interface ICoverFinder
     {
         /// <summary>
         /// Gets or sets finder name.
         /// </summary>
-        String Name { get; }
+        string Name { get; }
 
-        /// <summary>
-        /// Returns a cover art image for the specified track.
-        /// </summary>
-        /// <param name="trackInfo">
-        /// An object contating data of currently playing track.
-        /// </param>
-        /// <param name="concreteRule">
-        /// A rule that should be used to search for cover art image.
-        /// </param>
-        /// <returns>Result of cover art image search.</returns>
-       // Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule);
+        CoverRuleType RuleType { get; }
 
-        Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule);
+        Bitmap GetBitmap(TrackInfo track);
+
+        Bitmap GetBitmap(TrackInfo track, FindRule currentRule);
     }
 }

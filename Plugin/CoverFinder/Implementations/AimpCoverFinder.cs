@@ -1,24 +1,17 @@
-﻿namespace AIMP.DiskCover.CoverFinder.Implementations
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.Threading;
+
+using AIMP.SDK.AlbumArtManager;
+using AIMP.SDK.Player;
+
+namespace AIMP.DiskCover.CoverFinder.Implementations
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Threading;
-
-    using AIMP.SDK.AlbumArtManager;
-    using AIMP.SDK.Player;
-
     [Export(typeof(ICoverFinder))]
     public class AimpCoverFinder : ICoverFinder
     {
         public const string ModuleName = "AIMPCOVERART";
-
-                            //         _player.AlbumArtManager.Completed += (sender, args) =>
-                            //    {
-                            //        result = args.CoverImage;
-                            //    };
-
-                            //
 
         private AutoResetEvent _resetEvent;
 
@@ -54,8 +47,6 @@
             _lock = new object();
         }
 
-        #region Implementation of ICoverFinder
-
         /// <summary>
         /// Gets or sets finder name.
         /// </summary>
@@ -67,22 +58,19 @@
             }
         }
 
-        /// <summary>
-        /// Returns a cover art image for the specified track.
-        /// </summary>
-        /// <param name="trackInfo">
-        /// An object contating data of currently playing track.
-        /// </param>
-        /// <param name="concreteRule">
-        /// A rule that should be used to search for cover art image.
-        /// </param>
-        /// <returns>Result of cover art image search.</returns>
-        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule)
+        public CoverRuleType RuleType => CoverRuleType.AIMP;
+        public Bitmap GetBitmap(TrackInfo track)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
+        public Bitmap GetBitmap(TrackInfo track, FindRule currentRule)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Bitmap GetBitmap(IAimpPlayer player)
         {
             player.AlbumArtManager.Completed += (sender, args) =>
                 {
@@ -96,6 +84,9 @@
             return Result;
         }
 
-        #endregion
+        public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
+        {
+            return GetBitmap(player);
+        }
     }
 }

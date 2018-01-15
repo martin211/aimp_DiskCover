@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using AIMP.SDK.Player;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 
@@ -26,25 +25,14 @@ namespace AIMP.DiskCover.LastFM
             get { return ModuleName; }
         }
 
-        /// <summary>
-        /// DO NOT DELETE. Used in composition process.
-        /// </summary>
-        public LastFmFinder()
+        public CoverRuleType RuleType => CoverRuleType.LastFM;
+
+        public Bitmap GetBitmap(TrackInfo trackInfo)
         {
-            _client = new LastfmClient(ApiKey, SecretKey);
+            return GetBitmap(trackInfo, null);
         }
 
-        /// <summary>
-        /// Returns a cover art image for the specified track.
-        /// </summary>
-        /// <param name="trackInfo">
-        /// An object contating data of currently playing track.
-        /// </param>
-        /// <param name="concreteRule">
-        /// A rule that should be used to search for cover art image.
-        /// </param>
-        /// <returns>Result of cover art image search.</returns>
-        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule)
+        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule currentRule)
         {
             Bitmap result = null;
 
@@ -94,9 +82,9 @@ namespace AIMP.DiskCover.LastFM
             return result;
         }
 
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
+        public LastFmFinder()
         {
-            return GetBitmap(new TrackInfo(player), concreteRule);
+            _client = new LastfmClient(ApiKey, SecretKey);
         }
 
         private Bitmap DownloadImage(Uri uri)
@@ -119,6 +107,7 @@ namespace AIMP.DiskCover.LastFM
                     bitmap = new Bitmap(imageStream);
                 }
             }
+
             return bitmap;
         }
 
@@ -142,6 +131,7 @@ namespace AIMP.DiskCover.LastFM
                 {
                     return null;
                 }
+
                 stream = response.GetResponseStream();
             }
             return stream;

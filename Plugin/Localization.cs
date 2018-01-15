@@ -29,6 +29,7 @@ namespace AIMP.DiskCover
 
 		private const string DiskCoverKey = "DiskCover";
 		private const string DiskCoverOptionsKey = "DiskCover.Options";
+		private const string DiskCoverAlbumArtCatalogKey = "DiskCover.AlbumArtCatalog";
 		public class DiskCover
 		{
 			
@@ -45,18 +46,6 @@ namespace AIMP.DiskCover
 			public static string MenuName => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverKey}\\MenuName");
 			public class Options
 			{
-				
-
-				/// <summary>
-				/// Cancel
-				/// </summary>
-				public static string Cancel => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\Cancel");
-				
-
-				/// <summary>
-				/// Save
-				/// </summary>
-				public static string Save => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\Save");
 				
 
 				/// <summary>
@@ -147,6 +136,15 @@ namespace AIMP.DiskCover
 				/// Search in last.fm
 				/// </summary>
 				public static string LastFM => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\LastFM");
+			}
+			public class AlbumArtCatalog
+			{
+				
+
+				/// <summary>
+				/// Last.fm
+				/// </summary>
+				public static string Name => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverAlbumArtCatalogKey}\\Name");
 			}
 		}
     }

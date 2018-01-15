@@ -9,13 +9,13 @@ using System.Drawing;
 using System.Threading;
 using AIMP.DiskCover.LastFM;
 using AIMP.DiskCover.Settings;
+using AIMP.SDK.FileManager;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
-using AIMP.SDK.Threading;
 
 namespace AIMP.DiskCover
 {
-    //using AIMP.DiskCover.LastFM;
+    public delegate void EndRequestHandler(UIntPtr aimpTaskId, Bitmap foundImage);
 
     public class CoverFinderManager : ICoverFinderManager
     {
@@ -53,6 +53,17 @@ namespace AIMP.DiskCover
             _logger = logger;
         }
 
+        public Bitmap FindCoverImage(string fileUrl, string artist, string album)
+        {
+            Guid initialRequestId = _currentRequestId = Guid.NewGuid();
+            return LoadImageWorkItem(initialRequestId, new TrackInfo
+            {
+                Album = album,
+                Artist = artist,
+                FileName = fileUrl
+            });
+        }
+
         private List<ICoverFinder> CoverModules { get; set; }
 
         /// <summary>
@@ -63,33 +74,35 @@ namespace AIMP.DiskCover
         /// <summary>
         /// An event that is raised when cover finder finishes its work.
         /// </summary>
-        public event EventHandler<FinderEvent> EndRequest;
+        public event EndRequestHandler EndRequest;
 
         /// <summary>
         /// Starts loading a new cover image.
         /// The result will come in an event arguments.
         /// </summary>
-        public void StartLoadingBitmap(UIntPtr taskId)
+        public void FindCoverImageAsync(UIntPtr taskId)
         {
-            Guid initialRequestId;
-
-            initialRequestId = _currentRequestId = Guid.NewGuid();
+            Guid initialRequestId = _currentRequestId = Guid.NewGuid();
             OnBeginRequest(this, null);
-            var coverArt = LoadImageWorkItem(initialRequestId);
+            var coverArt = LoadImageWorkItem(initialRequestId, new TrackInfo(_aimpPlayer.CurrentFileInfo));
             if (coverArt != null)
             {
                 if (initialRequestId == _currentRequestId)
                 {
-                    OnEndRequest(this, new FinderEvent(coverArt));
+                    OnEndRequest(taskId, coverArt);
                 }
             }
             else
             {
                 // TIMEOUT
-                OnEndRequest(this, new FinderEvent(null));
+                OnEndRequest(taskId, null);
             }
+        }
 
-            _aimpPlayer.ServiceThreadPool.Cancel(taskId, AimpServiceThreadPoolType.None);
+        public Bitmap FindCoverImage(IAimpFileInfo trackInfo)
+        {
+            Guid initialRequestId = _currentRequestId = Guid.NewGuid();
+            return LoadImageWorkItem(initialRequestId, new TrackInfo(trackInfo));
         }
 
         /// <summary>
@@ -97,7 +110,7 @@ namespace AIMP.DiskCover
         /// and tries to load the cover image.
         /// </summary>
         /// <param name="initialRequestId">An identifier of current search session.</param>
-        private Bitmap LoadImageWorkItem(Object initialRequestId)
+        private Bitmap LoadImageWorkItem(Object initialRequestId, TrackInfo trackInfo)
         {
             Bitmap result = null;
 
@@ -109,12 +122,7 @@ namespace AIMP.DiskCover
 
             try
             {
-                _logger.Write(
-                    $"Album: {_aimpPlayer.CurrentFileInfo.Album};\tArtist: {_aimpPlayer.CurrentFileInfo.Artist};\tTrack: {_aimpPlayer.CurrentFileInfo.FileName}");
-
-                // This object prevents race conditions when the search 
-                // is in progress and at the same time AIMP is changing a track.
-                var trackInfo = new TrackInfo(_aimpPlayer);
+                _logger.Write($"Album: {trackInfo.Album};\tArtist: {trackInfo.Artist};\tTrack: {trackInfo.FileName}");
 
                 var enabledRules = _config.AppliedRules.ToList();
 
@@ -151,7 +159,7 @@ namespace AIMP.DiskCover
                         throw new ApplicationException("Finder plugin " + moduleName + " has not been found.");
                     }
 
-                    result = finder.GetBitmap(_aimpPlayer, rule);
+                    result = finder.GetBitmap(trackInfo, rule);
 
                     if (result != null)
                     {
@@ -179,10 +187,10 @@ namespace AIMP.DiskCover
             temp?.Invoke(sender, e);
         }
 
-        private void OnEndRequest(object sender, FinderEvent e)
+        private void OnEndRequest(UIntPtr aimpTaskId, Bitmap coverArt)
         {
-            EventHandler<FinderEvent> temp = Interlocked.CompareExchange(ref EndRequest, null, null);
-            temp?.Invoke(sender, e);
+            var temp = Interlocked.CompareExchange(ref EndRequest, null, null);
+            temp?.Invoke(aimpTaskId, coverArt);
         }
     }
 }

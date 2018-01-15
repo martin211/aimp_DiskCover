@@ -193,10 +193,6 @@ namespace AIMP.DiskCover.Settings
 
         public string CtrlDescriptionText => Localization.DiskCover.Options.CtrlDescription;
 
-        public string CancelButtonText => Localization.DiskCover.Options.Cancel;
-
-        public string SaveButtonText => Localization.DiskCover.Options.Save;
-
         public string ResizeModeHotkeys => Localization.DiskCover.Options.EnableResizeModeHotkeys;
 
         public string DisplayIconInTaskbar => Localization.DiskCover.Options.DisplayIconInTaskbar;

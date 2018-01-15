@@ -6,8 +6,6 @@ using System.ComponentModel.Composition;
 
 namespace AIMP.DiskCover
 {
-    using AIMP.SDK.Player;
-
     [Export(typeof(ICoverFinder))]
     public class LocalCoverFinder : ICoverFinder
     {
@@ -18,20 +16,16 @@ namespace AIMP.DiskCover
             get { return ModuleName; }
         }
 
-        /// <summary>
-        /// Returns a cover art image for the specified track.
-        /// </summary>
-        /// <param name="trackInfo">
-        /// An object contating data of currently playing track.
-        /// </param>
-        /// <param name="concreteRule">
-        /// A rule that should be used to search for cover art image.
-        /// </param>
-        /// <returns>Result of cover art image search.</returns>
+        public CoverRuleType RuleType => CoverRuleType.CoverFile;
+
+        public Bitmap GetBitmap(TrackInfo track)
+        {
+            throw new NotImplementedException();
+        }
+
         public Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule)
         {
             Bitmap result = null;
-
 
             var fileDir = Path.GetDirectoryName(trackInfo.FileName);
 
@@ -87,11 +81,6 @@ namespace AIMP.DiskCover
             }
 
             return result;
-        }
-
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
-        {
-            return GetBitmap(new TrackInfo(player), concreteRule);
         }
     }
 }

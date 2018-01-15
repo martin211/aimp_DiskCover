@@ -128,6 +128,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs" />
     <Compile Include="Core\DiskCoverPlugin.cs" />
     <Compile Include="Core\FinderEvents.cs" />
     <Compile Include="Core\CoverFinderManager.cs" />
@@ -159,6 +160,11 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\LocalizerExtension.cs" />
     <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Resources\LocalizedData.cs" />
@@ -179,6 +185,10 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\neutral\Common.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -217,6 +227,8 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Localization.cs</LastGenOutput>
     </Content>
+    <None Include="Resources\lastfm.png" />
+    <None Include="Resources\Image1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -227,6 +239,7 @@
       <Name>IF.Lastfm.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
