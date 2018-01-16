@@ -166,7 +166,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\LocalizerExtension.cs" />
     <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Resources\LocalizedData.cs" />
     <Compile Include="Core\FindRule.cs" />

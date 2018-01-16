@@ -68,15 +68,15 @@
             switch (Rule)
             {
                 case CoverRuleType.CoverFile:
-                    return LocalizedData.FindRules.CoverFile;
+                    return Localization.DiskCover.Options.CoverFile;
                 case CoverRuleType.FromTags:
-                    return LocalizedData.FindRules.FromTags;
+                    return Localization.DiskCover.Options.FromTags;
                 case CoverRuleType.AlbumFile:
-                    return LocalizedData.FindRules.AlbumFile;
+                    return Localization.DiskCover.Options.AlbumFile;
                 case CoverRuleType.LastFM:
-                    return LocalizedData.FindRules.LastFM;
+                    return Localization.DiskCover.Options.LastFM;
                 case CoverRuleType.AIMP:
-                    return "AIMP";
+                    return Localization.DiskCover.Options.Aimp;
                 default:
                     throw new NotSupportedException();
             }

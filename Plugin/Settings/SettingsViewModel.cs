@@ -122,6 +122,16 @@ namespace AIMP.DiskCover.Settings
             }
         }
 
+        public bool IsDebugMode
+        {
+            get => _pluginSettings.DebugMode;
+            set
+            {
+                _pluginSettings.DebugMode = value;
+                OnPropertyChanged();
+            }
+        }
+
         public FindRule SelectedAvailableRule { get; set; }
 
         public FindRule SelectedAppliedRule { get; set; }
@@ -170,33 +180,6 @@ namespace AIMP.DiskCover.Settings
                            c => CanDownPosition));
             }
         }
-
-        #region Localization
-
-        public string GeneralTabText => Localization.DiskCover.Options.General;
-
-        public string DisplayIconInTaskbarText => Localization.DiskCover.Options.DisplayIconInTaskbar;
-
-        public string EnableResizeModeHotkeysText => Localization.DiskCover.Options.EnableResizeModeHotkeys;
-
-        public string SearchRulesText => Localization.DiskCover.Options.SearchRules;
-
-        public string AvailableRulesText => Localization.DiskCover.Options.AvailableRules;
-
-        public string AppliedRulesText => Localization.DiskCover.Options.AppliedRules;
-
-        public string HelpText => Localization.DiskCover.Options.Help;
-
-        public string ShiftDescriptionText => Localization.DiskCover.Options.ShiftDescription;
-
-        public string AltDescriptionText => Localization.DiskCover.Options.AltDescription;
-
-        public string CtrlDescriptionText => Localization.DiskCover.Options.CtrlDescription;
-
-        public string ResizeModeHotkeys => Localization.DiskCover.Options.EnableResizeModeHotkeys;
-
-        public string DisplayIconInTaskbar => Localization.DiskCover.Options.DisplayIconInTaskbar;
-        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -55,7 +55,7 @@ namespace AIMP.DiskCover
 
         public FileLoggerManager()
         {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             _fileLog = Path.Combine(dir, "diskcover.log");
 
             if (!File.Exists(_fileLog))
@@ -106,6 +106,8 @@ namespace AIMP.DiskCover
                     _logFileStream.WriteLine($"Operating System Service Pack: {managementObject["CSDVersion"]}");
                 }
             }
+
+            _logFileStream.Flush();
         }
     }
 }

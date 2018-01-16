@@ -20,11 +20,100 @@
         sections = iniFile.ParseFile();
     }
 #>
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Markup;
+using System.Xaml;
 using AIMP.DiskCover.Core;
 using AIMP.SDK.Player;
 
+
 namespace AIMP.DiskCover
 {
+    [AttributeUsage(AttributeTargets.Property)]
+    internal class MarkupLocalizationAttribute : Attribute
+    {
+        public MarkupLocalizationAttribute(string text)
+        {
+            Text = text;
+        }
+
+        public string Text { get; set; }
+    }
+
+    public class LocalizerExtension : MarkupExtension
+    {
+        private static readonly String _localizedDataFullName = typeof(Localization).FullName;
+
+        public LocalizerExtension()
+        {
+        }
+
+        public LocalizerExtension(String key)
+        {
+            Key = key;
+        }
+
+        [ConstructorArgument("key")] 
+        public String Key { get; set; }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            String typeName = _localizedDataFullName;
+
+            String[] parts = Key.Split('.');
+
+            // If resource name is composite (is not on the top of hierarchy)
+            if (parts.Length > 1)
+            {
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    typeName += "+" + parts[i];
+                }
+            }
+
+            var rootObjectProvider = serviceProvider.GetService(typeof(IRootObjectProvider)) as IRootObjectProvider;
+            var isInDesign =rootObjectProvider == null;
+
+            Type containingClassType = Type.GetType(typeName);
+
+            if (containingClassType == null)
+            {
+                throw new LocalizerException("Containing class is not found: " + typeName);
+            }
+
+            // Search for the requested static property.
+            PropertyInfo property = containingClassType.GetProperty(parts.Last());
+
+            if (property == null)
+            {
+                throw new LocalizerException("Property is not found: " + parts.Last());
+            }
+            // Return its value.
+            if (isInDesign)
+            {
+                var attr = property.GetCustomAttribute<MarkupLocalizationAttribute>();
+                return attr != null ? attr.Text : "Value not found";
+            }
+
+            return property.GetValue(null, null);
+        }
+    }
+
+    /// <summary>
+    /// An exception that is raised when some error happens 
+    /// in <see cref="LocalizerExtension"/>.
+    /// </summary>
+    public class LocalizerException : ApplicationException
+    {
+        public LocalizerException(String message)
+            :base(message)
+        {
+            
+        }
+    }
+
     internal class Localization
     {
 		private class LocalizationManager
@@ -86,6 +175,7 @@ namespace AIMP.DiskCover
                 transformation.WriteLine("/// " + pair.Value);
                 transformation.WriteLine("/// </summary>");
 				var tokenKey = "{" + key + "}\\\\" + pair.Key;
+				transformation.WriteLine($"[MarkupLocalization(\"{pair.Value}\")]");
 				transformation.WriteLine($"public static string {pair.Key} => LocalizationManager.Instance.GetLocalizedString($\"{tokenKey}\");");
             }
 
