@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using AIMP.DiskCover.Core;
 
-
 namespace AIMP.DiskCover
 {
     /// <summary>
@@ -16,14 +15,15 @@ namespace AIMP.DiskCover
     public class ConfigProvider : IPluginSettings, IConfigProvider
     {
         private const string SectionName = "DiskCover.Settings";
-        private const string SettingEnabled = "Enabled";
-        private const string SettingHeight = "Height";
-        private const string SettingWidth = "Width";
-        private const string SettingLeft = "Left";
-        private const string SettingTop = "Top";
-        private const string SettingShowInTaskbar = "ShowInTaskbar";
-        private const string SettingEnableHotKeys = "EnableHotKeys";
-        private const string SettingRules = "Rules";
+        private readonly string SettingEnabled = $"{SectionName}\\Enabled";
+        private readonly string SettingHeight = $"{SectionName}\\Height";
+        private readonly string SettingWidth = $"{SectionName}\\Width";
+        private readonly string SettingLeft = $"{SectionName}\\Left";
+        private readonly string SettingTop = $"{SectionName}\\Top";
+        private readonly string SettingShowInTaskbar = $"{SectionName}\\ShowInTaskbar";
+        private readonly string SettingEnableHotKeys = $"{SectionName}\\EnableHotKeys";
+        private readonly string SettingRules = $"{SectionName}\\Rules";
+        private readonly string SettingDebug = $"{SectionName}\\DebugMode";
 
         private readonly IAimpPlayer _player;
         private readonly IPluginEvents _pluginEvents;
@@ -43,16 +43,17 @@ namespace AIMP.DiskCover
 
         private void LoadSettings()
         {
-            IsEnabled = _player.ServiceConfig.GetValueAsInt32($"{SectionName}\\{SettingEnabled}") == 1;
-            Height = _player.ServiceConfig.GetValueAsFloat($"{SectionName}\\{SettingHeight}");
-            Width = _player.ServiceConfig.GetValueAsFloat($"{SectionName}\\{SettingWidth}");
-            Left = _player.ServiceConfig.GetValueAsFloat($"{SectionName}\\{SettingLeft}");
-            Top = _player.ServiceConfig.GetValueAsFloat($"{SectionName}\\{SettingTop}");
-            ShowInTaskbar = _player.ServiceConfig.GetValueAsInt32($"{SectionName}\\{SettingShowInTaskbar}") == 1;
-            EnableHotKeys = _player.ServiceConfig.GetValueAsInt32($"{SectionName}\\{SettingEnableHotKeys}") == 1;
+            IsEnabled = _player.ServiceConfig.GetValueAsInt32(SettingEnabled) == 1;
+            Height = _player.ServiceConfig.GetValueAsFloat(SettingHeight);
+            Width = _player.ServiceConfig.GetValueAsFloat(SettingWidth);
+            Left = _player.ServiceConfig.GetValueAsFloat(SettingLeft);
+            Top = _player.ServiceConfig.GetValueAsFloat(SettingTop);
+            ShowInTaskbar = _player.ServiceConfig.GetValueAsInt32(SettingShowInTaskbar) == 1;
+            EnableHotKeys = _player.ServiceConfig.GetValueAsInt32(SettingEnableHotKeys) == 1;
+            DebugMode = _player.ServiceConfig.GetValueAsInt32(SettingDebug) == 1;
 
             var rules = _player.ServiceConfig
-                .GetValueAsString($"{SectionName}\\{SettingRules}")
+                .GetValueAsString(SettingRules)
                 .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c =>
                 {
@@ -128,16 +129,19 @@ namespace AIMP.DiskCover
 
         public IEnumerable<FindRule> AppliedRules { get; set; }
 
+        public bool DebugMode { get; set; }
+
         public void StoreChanges()
         {
-            _player.ServiceConfig.SetValueAsInt32($"{SectionName}\\{SettingEnabled}", IsEnabled ? 1 : 0);
-            _player.ServiceConfig.SetValueAsFloat($"{SectionName}\\{SettingHeight}", (float)Height);
-            _player.ServiceConfig.SetValueAsFloat($"{SectionName}\\{SettingWidth}", (float)Width);
-            _player.ServiceConfig.SetValueAsFloat($"{SectionName}\\{SettingLeft}", (float)Left);
-            _player.ServiceConfig.SetValueAsFloat($"{SectionName}\\{SettingTop}", (float)Top);
-            _player.ServiceConfig.SetValueAsInt32($"{SectionName}\\{SettingShowInTaskbar}", ShowInTaskbar ? 1 : 0);
-            _player.ServiceConfig.SetValueAsInt32($"{SectionName}\\{SettingEnableHotKeys}", EnableHotKeys ? 1 : 0);
-            _player.ServiceConfig.SetValueAsString($"{SectionName}\\{SettingRules}", string.Join(";", AppliedRules.Select(c => c.Rule.ToString())));
+            _player.ServiceConfig.SetValueAsInt32(SettingEnabled, IsEnabled ? 1 : 0);
+            _player.ServiceConfig.SetValueAsFloat(SettingHeight, (float)Height);
+            _player.ServiceConfig.SetValueAsFloat(SettingWidth, (float)Width);
+            _player.ServiceConfig.SetValueAsFloat(SettingLeft, (float)Left);
+            _player.ServiceConfig.SetValueAsFloat(SettingTop, (float)Top);
+            _player.ServiceConfig.SetValueAsInt32(SettingShowInTaskbar, ShowInTaskbar ? 1 : 0);
+            _player.ServiceConfig.SetValueAsInt32(SettingEnableHotKeys, EnableHotKeys ? 1 : 0);
+            _player.ServiceConfig.SetValueAsInt32(SettingDebug, DebugMode ? 1 : 0);
+            _player.ServiceConfig.SetValueAsString(SettingRules, string.Join(";", AppliedRules.Select(c => c.Rule.ToString())));
             _player.ServiceConfig.FlushCache();
         }
     }

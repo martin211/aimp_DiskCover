@@ -2,8 +2,9 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>Z:\Code\AIMP\AIMP4.50\AIMP.exe</StartProgram>
-    <StartWorkingDirectory>Z:\Code\AIMP\AIMP4.50\</StartWorkingDirectory>
+    <StartProgram>C:\Users\evgeniy.bogdan\code\AIMP4.50\AIMP.exe</StartProgram>
+    <StartWorkingDirectory>C:\Users\evgeniy.bogdan\code\AIMP4.50\</StartWorkingDirectory>
+    <StartArguments>/DEBUG</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>

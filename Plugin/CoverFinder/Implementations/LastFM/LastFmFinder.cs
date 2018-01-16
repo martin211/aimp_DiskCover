@@ -3,10 +3,12 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
+using IF.Lastfm.Core.Api.Helpers;
+using IF.Lastfm.Core.Objects;
 
 namespace AIMP.DiskCover.LastFM
 {
@@ -34,41 +36,37 @@ namespace AIMP.DiskCover.LastFM
 
         public Bitmap GetBitmap(TrackInfo trackInfo, FindRule currentRule)
         {
-            Bitmap result = null;
-
             try
             {
-                if (!trackInfo.IsStream)
+                // get bitmap for radio
+                String[] s = String.IsNullOrEmpty(trackInfo.Artist)
+                    ? trackInfo.Title.Split('-')
+                    : new[] { trackInfo.Artist.Trim(), trackInfo.Title.Trim() };
+
+                if (s.Length > 1)
                 {
-                    var response = _client.Album.GetInfoAsync(trackInfo.Artist, trackInfo.Album);
-                    response.Wait();
-                    if (response.IsCompleted && response.Result.Status == LastResponseStatus.Successful)
+                    var track = GetTrackInfo(s[0], s[1]);
+                    track.Wait();
+                    if (!string.IsNullOrWhiteSpace(track.Result?.AlbumName))
                     {
-                        if (response.Result.Content != null && response.Result.Content.Images.Any())
+                        var album = GetAlbumInfo(s[0], track.Result.AlbumName);
+                        album.Wait();
+                        if (album.Result?.Images != null)
                         {
-                            result = DownloadImage(response.Result.Content.Images.Largest);
+                            return DownloadImage(album.Result.Images.Largest);
+                        }
+
+                        if (track.Result.Images != null)
+                        {
+                            return DownloadImage(track.Result.Images.Largest);
                         }
                     }
-                }
-                else
-                {
-                    // get bitmap for radio
-                    String[] s = String.IsNullOrEmpty(trackInfo.Artist)
-                        ? trackInfo.Title.Split('-')
-                        : new[] { trackInfo.Artist, trackInfo.Title };
 
-                    if (s.Length > 1)
+                    var artist = GetArtistInfo(s[0]);
+                    artist.Wait();
+                    if (artist.Result?.MainImage != null)
                     {
-                        var n = _client.Track.GetInfoAsync(s[0].Trim(), s[1].Trim(), string.Empty);
-                        n.Wait();
-                        if (n.IsCompleted)
-                        {
-                            var info = n.Result.Content;
-                            if (info.Images.Any())
-                            {
-                                result = DownloadImage(info.Images.Largest);
-                            }
-                        }
+                        return DownloadImage(artist.Result.MainImage.Largest);
                     }
                 }
             }
@@ -79,7 +77,7 @@ namespace AIMP.DiskCover.LastFM
 #endif
             }
 
-            return result;
+            return null;
         }
 
         public LastFmFinder()
@@ -135,6 +133,32 @@ namespace AIMP.DiskCover.LastFM
                 stream = response.GetResponseStream();
             }
             return stream;
+        }
+
+        private async Task<LastTrack> GetTrackInfo(string artist, string track)
+        {
+            return await GetData(() => _client.Track.GetInfoAsync(track, artist, string.Empty));
+        }
+
+        private async Task<LastAlbum> GetAlbumInfo(string artist, string album)
+        {
+            return await GetData(() => _client.Album.GetInfoAsync(artist, album, true));
+        }
+
+        private async Task<LastArtist> GetArtistInfo(string artist)
+        {
+            return await GetData(() => _client.Artist.GetInfoAsync(artist, "en", true));
+        }
+
+        private async Task<TData> GetData<TData>(Func<Task<LastResponse<TData>>> action)
+        {
+            LastResponse<TData> data = await action();
+            if (data.Status == LastResponseStatus.Successful)
+            {
+                return data.Content;
+            }
+
+            return default(TData);
         }
     }
 }

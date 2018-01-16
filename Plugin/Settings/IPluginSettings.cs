@@ -26,5 +26,7 @@ namespace AIMP.DiskCover.Settings
         IEnumerable<FindRule> Rules { get; }
 
         IEnumerable<FindRule> AppliedRules { get; set; }
+
+        bool DebugMode { get; set; }
     }
 }
