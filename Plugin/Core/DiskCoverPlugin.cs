@@ -66,8 +66,17 @@ namespace AIMP.DiskCover.Core
         {
             _logger.Write("DiskCover: Initialize plugin");
 
-            _player.Core.RegisterExtension(_dialogFrame);
-            _player.Core.RegisterExtension(_aimpExtensionAlbumArtCatalog);
+            var res = _player.Core.RegisterExtension(_dialogFrame);
+            if (res != AimpActionResult.Ok)
+            {
+                _logger.Write($"Unable register IAimpOptionsDialogFrame: {res}");
+            }
+
+            res = _player.Core.RegisterExtension(_aimpExtensionAlbumArtCatalog);
+            if (res != AimpActionResult.Ok)
+            {
+                _logger.Write($"Unable register IAimpExtensionAlbumArtCatalog: {res}");
+            }
 
             InitMenu();
 
@@ -81,13 +90,20 @@ namespace AIMP.DiskCover.Core
 
         private void InitMenu()
         {
-            _player.MenuManager.CreateMenuItem(out _menuItem);
-            _menuItem.Checked = _settings.IsEnabled;
-            _menuItem.OnExecute += AimpMenu_Click;
-            _menuItem.Style = AimpMenuItemStyle.CheckBox;
-            _menuItem.Name = Localization.DiskCover.MenuName;
-            _isChecked = _settings.IsEnabled;
-            _player.MenuManager.Add(ParentMenuType.AIMP_MENUID_COMMON_UTILITIES, _menuItem);
+            var res = _player.MenuManager.CreateMenuItem(out _menuItem);
+            if (res == AimpActionResult.Ok)
+            {
+                _menuItem.Checked = _settings.IsEnabled;
+                _menuItem.OnExecute += AimpMenu_Click;
+                _menuItem.Style = AimpMenuItemStyle.CheckBox;
+                _menuItem.Name = Localization.DiskCover.MenuName;
+                _isChecked = _settings.IsEnabled;
+                _player.MenuManager.Add(ParentMenuType.AIMP_MENUID_COMMON_UTILITIES, _menuItem);
+            }
+            else
+            {
+                _logger.Write($"Unable create and register menu item: {res}");
+            }
         }
 
         private void InitCoverWindow()

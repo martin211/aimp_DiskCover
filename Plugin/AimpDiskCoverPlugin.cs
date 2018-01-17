@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Management;
-using System.Reflection;
 using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.Logger;
+using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover
 {
@@ -52,62 +53,91 @@ namespace AIMP.DiskCover
     {
         private readonly string _fileLog;
         private StreamWriter _logFileStream;
+        private readonly IPluginSettings _pluginSettings;
+        private readonly IAimpPlayer _player;
 
-        public FileLoggerManager()
+        public FileLoggerManager(
+            IAimpPlayer aimpPlayer,
+            IPluginSettings pluginSettings,
+            IPluginEvents pluginEvents)
         {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _pluginSettings = pluginSettings;
+            _player = aimpPlayer;
+            pluginEvents.SaveConfig += PluginEvents_SaveConfig;
+
+            var dir = _player.Core.GetPath(AimpMessages.AimpCorePathType.AIMP_CORE_PATH_PROFILE);
             _fileLog = Path.Combine(dir, "diskcover.log");
 
-            if (!File.Exists(_fileLog))
+            if (pluginSettings.DebugMode)
             {
                 Init();
             }
-            else
+        }
+
+        private void PluginEvents_SaveConfig(object sender, EventArgs e)
+        {
+            if (_pluginSettings.DebugMode && _logFileStream == null)
             {
-                _logFileStream = File.AppendText(_fileLog);
+                Init();
             }
         }
 
         public void Write(string message)
         {
-            _logFileStream.WriteLine($"[{DateTime.Now:f}] {message}");
+            if (_pluginSettings.DebugMode)
+            {
+                _logFileStream.WriteLine($"[{DateTime.Now:f}] {message}");
+                _logFileStream.Flush();
+            }
         }
 
         public void Write(Exception exception)
         {
-            _logFileStream.WriteLine($"[{DateTime.Now:f}] {exception}");
+            if (_pluginSettings.DebugMode)
+            {
+                _logFileStream.WriteLine($"[{DateTime.Now:f}] {exception}");
+                _logFileStream.Flush();
+            }
         }
 
         public void Close()
         {
-            _logFileStream.Flush();
-            _logFileStream.Close();
+            if (_pluginSettings.DebugMode)
+            {
+                _logFileStream.Flush();
+                _logFileStream.Close();
+            }
         }
 
         private void Init()
         {
+            var writeOsInfo = !File.Exists(_fileLog);
             _logFileStream = File.AppendText(_fileLog);
 
-            var mos = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
-            foreach (var managementObject in mos.Get())
+            if (writeOsInfo)
             {
-                if (managementObject["Caption"] != null)
+                var mos = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
+                foreach (var managementObject in mos.Get())
                 {
-                    _logFileStream.WriteLine($"Operating System Name: {managementObject["Caption"]}");
+                    if (managementObject["Caption"] != null)
+                    {
+                        _logFileStream.WriteLine($"Operating System Name: {managementObject["Caption"]}");
+                    }
+
+                    if (managementObject["OSArchitecture"] != null)
+                    {
+                        _logFileStream.WriteLine($"Operating System Architecture: {managementObject["OSArchitecture"]}");
+                    }
+
+                    if (managementObject["CSDVersion"] != null)
+                    {
+                        _logFileStream.WriteLine($"Operating System Service Pack: {managementObject["CSDVersion"]}");
+                    }
                 }
 
-                if (managementObject["OSArchitecture"] != null)
-                {
-                    _logFileStream.WriteLine($"Operating System Architecture: {managementObject["OSArchitecture"]}");
-                }
-
-                if (managementObject["CSDVersion"] != null)
-                {
-                    _logFileStream.WriteLine($"Operating System Service Pack: {managementObject["CSDVersion"]}");
-                }
+                _logFileStream.WriteLine(Environment.NewLine);
+                _logFileStream.Flush();
             }
-
-            _logFileStream.Flush();
         }
     }
 }

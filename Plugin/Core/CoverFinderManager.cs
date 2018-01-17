@@ -109,7 +109,6 @@ namespace AIMP.DiskCover
         /// Being in a separate thread, this method uses find rules one by one 
         /// and tries to load the cover image.
         /// </summary>
-        /// <param name="initialRequestId">An identifier of current search session.</param>
         private Bitmap LoadImageWorkItem(Object initialRequestId, TrackInfo trackInfo)
         {
             Bitmap result = null;
@@ -122,7 +121,7 @@ namespace AIMP.DiskCover
 
             try
             {
-                _logger.Write($"Album: {trackInfo.Album};\tArtist: {trackInfo.Artist};\tTrack: {trackInfo.FileName}");
+                _logger.Write($"Album: {trackInfo.Album}\tArtist: {trackInfo.Artist}\tTrack: {trackInfo.FileName}\tFile:{trackInfo.FileName}");
 
                 var enabledRules = _config.AppliedRules.ToList();
 
@@ -156,7 +155,8 @@ namespace AIMP.DiskCover
                     ICoverFinder finder = CoverModules.FirstOrDefault(c => c.Name == moduleName);
                     if (finder == null)
                     {
-                        throw new ApplicationException("Finder plugin " + moduleName + " has not been found.");
+                        _logger.Write($"Finder plugin {moduleName} has not been found.");
+                        break;
                     }
 
                     result = finder.GetBitmap(trackInfo, rule);
@@ -166,16 +166,13 @@ namespace AIMP.DiskCover
                         _logger.Write($"Module: {moduleName}\tCover art has been found");
                         break;
                     }
-                    {
-                        _logger.Write($"Module: {moduleName}\tCover art has not been found");
-                    }
-                }
 
-                _logger.Write("------------------------------------------------------");
+                    _logger.Write($"Module: {moduleName}\tCover art has not been found");
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debugger.Break();
+                _logger.Write(ex);
             }
 
             return result;

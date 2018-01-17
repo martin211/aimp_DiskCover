@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using IF.Lastfm.Core.Api;
@@ -51,12 +52,12 @@ namespace AIMP.DiskCover.LastFM
                     {
                         var album = GetAlbumInfo(s[0], track.Result.AlbumName);
                         album.Wait();
-                        if (album.Result?.Images != null)
+                        if (album.Result?.Images != null && album.Result.Images.Any())
                         {
                             return DownloadImage(album.Result.Images.Largest);
                         }
 
-                        if (track.Result.Images != null)
+                        if (track.Result.Images != null && track.Result.Images.Any())
                         {
                             return DownloadImage(track.Result.Images.Largest);
                         }
