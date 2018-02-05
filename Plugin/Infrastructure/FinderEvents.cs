@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.Infrastructure
 {
     public class FinderEvent : EventArgs
     {

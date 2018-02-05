@@ -1,12 +1,9 @@
-﻿namespace AIMP.DiskCover
+﻿using System;
+using System.Diagnostics.Contracts;
+using AIMP.DiskCover.CoverFinder;
+
+namespace AIMP.DiskCover.Infrastructure
 {
-    using System;
-    using System.Diagnostics.Contracts;
-
-    using AIMP.DiskCover.CoverFinder.Implementations;
-
-    using Resources;
-
     public enum CoverRuleType
     {
         CoverFile,
@@ -31,7 +28,7 @@
                 new FindRule { Module = LocalCoverFinder.ModuleName, Rule = CoverRuleType.CoverFile },
                 //new FindRule { Module = LocalCoverFinder.ModuleName, Rule = CoverRuleType.FromTags },
                 new FindRule { Module = LocalCoverFinder.ModuleName, Rule = CoverRuleType.AlbumFile },
-                new FindRule { Module = LastFM.LastFmFinder.ModuleName, Rule = CoverRuleType.LastFM },
+                new FindRule { Module = LastFmFinder.ModuleName, Rule = CoverRuleType.LastFM },
                 new FindRule { Module = AimpCoverFinder.ModuleName, Rule = CoverRuleType.AIMP }
             };
         }

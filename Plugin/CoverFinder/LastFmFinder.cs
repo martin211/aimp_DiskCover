@@ -1,17 +1,19 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Windows;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
 using IF.Lastfm.Core.Objects;
 
-namespace AIMP.DiskCover.LastFM
+namespace AIMP.DiskCover.CoverFinder
 {
     [Export(typeof(ICoverFinder))]
     public class LastFmFinder : ICoverFinder
@@ -37,39 +39,19 @@ namespace AIMP.DiskCover.LastFM
 
         public Bitmap GetBitmap(TrackInfo trackInfo, FindRule currentRule)
         {
+            return GetBitmapAsync(trackInfo, currentRule).Result;
+        }
+
+        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo)
+        {
+            return GetBitmapAsync(trackInfo, null);
+        }
+
+        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo, FindRule currentRule)
+        {
             try
             {
-                // get bitmap for radio
-                String[] s = String.IsNullOrEmpty(trackInfo.Artist)
-                    ? trackInfo.Title.Split('-')
-                    : new[] { trackInfo.Artist.Trim(), trackInfo.Title.Trim() };
-
-                if (s.Length > 1)
-                {
-                    var track = GetTrackInfo(s[0], s[1]);
-                    track.Wait();
-                    if (!string.IsNullOrWhiteSpace(track.Result?.AlbumName))
-                    {
-                        var album = GetAlbumInfo(s[0], track.Result.AlbumName);
-                        album.Wait();
-                        if (album.Result?.Images != null && album.Result.Images.Any())
-                        {
-                            return DownloadImage(album.Result.Images.Largest);
-                        }
-
-                        if (track.Result.Images != null && track.Result.Images.Any())
-                        {
-                            return DownloadImage(track.Result.Images.Largest);
-                        }
-                    }
-
-                    var artist = GetArtistInfo(s[0]);
-                    artist.Wait();
-                    if (artist.Result?.MainImage != null)
-                    {
-                        return DownloadImage(artist.Result.MainImage.Largest);
-                    }
-                }
+                return GetTrackCoverAsync(trackInfo, currentRule);
             }
             catch (Exception ex)
             {
@@ -115,7 +97,7 @@ namespace AIMP.DiskCover.LastFM
             Stream stream;
             if ((object)url == null)
             {
-                stream = (Stream)null;
+                stream = null;
             }
             else
             {
@@ -126,7 +108,7 @@ namespace AIMP.DiskCover.LastFM
                 {
                     response = webRequest.GetResponse();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -160,6 +142,52 @@ namespace AIMP.DiskCover.LastFM
             }
 
             return default(TData);
+        }
+
+        private async Task<Bitmap> GetTrackCoverAsync(TrackInfo trackInfo, FindRule currentRule)
+        {
+            var album = trackInfo.Album;
+            var artist = trackInfo.Artist;
+            var title = trackInfo.Title;
+
+            if (trackInfo.IsStream)
+            {
+                var s = trackInfo.Title.Split('-');
+                artist = s[0];
+                title = s[1];
+            }
+
+            if (!string.IsNullOrWhiteSpace(album))
+            {
+                var albumInfo = await GetAlbumInfo(artist, album);
+                if (albumInfo.Images != null && albumInfo.Images.Any())
+                {
+                    return DownloadImage(albumInfo.Images.Largest);
+                }
+            }
+
+            var ti = await GetTrackInfo(artist, title);
+            if (!string.IsNullOrWhiteSpace(ti.AlbumName))
+            {
+                var albumInfo = await GetAlbumInfo(artist, ti.AlbumName);
+                if (albumInfo.Images != null && albumInfo.Images.Any())
+                {
+                    return DownloadImage(albumInfo.Images.Largest);
+                }
+
+                if (ti.Images != null && ti.Images.Any())
+                {
+                    return DownloadImage(ti.Images.Largest);
+                }
+            }
+
+            var artistInfo = await GetArtistInfo(artist);
+            if (artistInfo.MainImage != null)
+            {
+                return DownloadImage(artistInfo.MainImage.Largest);
+            }
+
+            return null;
         }
     }
 }

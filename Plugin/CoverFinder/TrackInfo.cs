@@ -1,6 +1,6 @@
 ﻿using AIMP.SDK.FileManager;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.CoverFinder
 {
     /// <summary>
     /// Container for data of various data of 

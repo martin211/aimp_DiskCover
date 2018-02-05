@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.Contracts;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Drawing;
 using System.Threading;
-using AIMP.DiskCover.LastFM;
+using AIMP.DiskCover.CoverFinder;
+using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK.FileManager;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.Infrastructure
 {
     public delegate void EndRequestHandler(UIntPtr aimpTaskId, Bitmap foundImage);
 

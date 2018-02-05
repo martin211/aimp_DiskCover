@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Infrastructure
 {
     public class UnityDependencyResolver : DependencyResolver
     {

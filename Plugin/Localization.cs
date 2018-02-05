@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Markup;
 using System.Xaml;
-using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Infrastructure;
 using AIMP.SDK.Player;
 
 

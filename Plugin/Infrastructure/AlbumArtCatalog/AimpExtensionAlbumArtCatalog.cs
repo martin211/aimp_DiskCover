@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
+using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
 using AIMP.SDK.AlbumArtManager;
 using AIMP.SDK.FileManager;
 using AIMP.SDK.Player;
 
-namespace AIMP.DiskCover.Core.AlbumArtCatalog
+namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
 {
     public class AimpExtensionAlbumArtCatalog : IAimpExtensionAlbumArtCatalog
     {

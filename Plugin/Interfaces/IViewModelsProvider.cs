@@ -1,6 +1,6 @@
 ﻿using AIMP.DiskCover.Settings;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Interfaces
 {
     public interface IViewModelsProvider
     {

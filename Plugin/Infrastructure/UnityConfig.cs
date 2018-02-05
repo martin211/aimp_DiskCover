@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Options;
@@ -7,7 +8,7 @@ using Unity;
 using Unity.Lifetime;
 using Unity.RegistrationByConvention;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Infrastructure
 {
     internal static class UnityConfig
     {

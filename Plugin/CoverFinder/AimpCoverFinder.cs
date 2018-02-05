@@ -2,11 +2,13 @@
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Threading;
-
+using System.Threading.Tasks;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 using AIMP.SDK.AlbumArtManager;
 using AIMP.SDK.Player;
 
-namespace AIMP.DiskCover.CoverFinder.Implementations
+namespace AIMP.DiskCover.CoverFinder
 {
     [Export(typeof(ICoverFinder))]
     public class AimpCoverFinder : ICoverFinder
@@ -69,6 +71,15 @@ namespace AIMP.DiskCover.CoverFinder.Implementations
             throw new NotImplementedException();
         }
 
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule)
+        {
+            throw new NotImplementedException();
+        }
 
         public Bitmap GetBitmap(IAimpPlayer player)
         {

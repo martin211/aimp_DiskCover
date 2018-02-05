@@ -1,4 +1,4 @@
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.Interfaces
 {
     public interface IConfigProvider
     {

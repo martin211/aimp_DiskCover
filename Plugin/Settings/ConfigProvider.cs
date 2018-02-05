@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 
 namespace AIMP.DiskCover
 {

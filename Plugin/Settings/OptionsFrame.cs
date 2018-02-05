@@ -1,5 +1,6 @@
 ﻿using System;
-using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 

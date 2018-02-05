@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Interfaces
 {
     public interface IPluginEvents
     {

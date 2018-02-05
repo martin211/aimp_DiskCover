@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.AlbumArtManager;
@@ -9,7 +10,7 @@ using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 using AIMP.SDK.Threading;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Infrastructure
 {
     public class AimpTask : IAimpTask
     {

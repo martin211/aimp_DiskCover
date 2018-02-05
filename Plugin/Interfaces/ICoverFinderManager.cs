@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using AIMP.DiskCover.Infrastructure;
 using AIMP.SDK.FileManager;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.Interfaces
 {
     public interface ICoverFinderManager
     {

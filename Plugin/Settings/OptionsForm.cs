@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using AIMP.DiskCover.Core;
 
 namespace AIMP.DiskCover.Settings
 {

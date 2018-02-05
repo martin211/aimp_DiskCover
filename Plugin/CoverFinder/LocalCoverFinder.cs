@@ -1,10 +1,13 @@
 ﻿using System;
-using System.IO;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
-using System.ComponentModel.Composition;
+using System.IO;
+using System.Threading.Tasks;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.CoverFinder
 {
     [Export(typeof(ICoverFinder))]
     public class LocalCoverFinder : ICoverFinder
@@ -52,7 +55,7 @@ namespace AIMP.DiskCover
             }
 
             // In case the pattern is not correct for the file system, do not proceed further.
-            if (Core.Algorithms.ContainsInvalidFileNameChars(searchPattern))
+            if (Algorithms.ContainsInvalidFileNameChars(searchPattern))
             {
                 return null;
             }
@@ -81,6 +84,16 @@ namespace AIMP.DiskCover
             }
 
             return result;
+        }
+
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule)
+        {
+            return Task.FromResult(GetBitmap(track, currentRule));
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System.Drawing;
-using AIMP.SDK.FileManager;
-using AIMP.SDK.Player;
+using System.Threading.Tasks;
+using AIMP.DiskCover.CoverFinder;
+using AIMP.DiskCover.Infrastructure;
 
-namespace AIMP.DiskCover
+namespace AIMP.DiskCover.Interfaces
 {
     public interface ICoverFinder
     {
@@ -16,5 +17,9 @@ namespace AIMP.DiskCover
         Bitmap GetBitmap(TrackInfo track);
 
         Bitmap GetBitmap(TrackInfo track, FindRule currentRule);
+
+        Task<Bitmap> GetBitmapAsync(TrackInfo track);
+
+        Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule);
     }
 }

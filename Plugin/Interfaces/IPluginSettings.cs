@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using AIMP.DiskCover.Infrastructure;
 
-namespace AIMP.DiskCover.Settings
+namespace AIMP.DiskCover.Interfaces
 {
     public interface IPluginSettings
     {

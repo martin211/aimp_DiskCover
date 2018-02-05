@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIMP.DiskCover.Core
+namespace AIMP.DiskCover.Infrastructure
 {
     public abstract class DependencyResolver
     {

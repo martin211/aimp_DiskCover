@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Management;
-using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.Logger;

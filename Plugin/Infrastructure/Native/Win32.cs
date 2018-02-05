@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace AIMP.DiskCover.Core.Native
+namespace AIMP.DiskCover.Infrastructure.Native
 {
     public static class Win32
     {

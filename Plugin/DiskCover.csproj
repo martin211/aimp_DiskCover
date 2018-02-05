@@ -129,29 +129,29 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs" />
-    <Compile Include="Core\DiskCoverPlugin.cs" />
-    <Compile Include="Core\FinderEvents.cs" />
-    <Compile Include="Core\CoverFinderManager.cs" />
-    <Compile Include="Core\Algorithms.cs" />
-    <Compile Include="Core\DependencyResolver.cs" />
-    <Compile Include="Core\ICoverFinderManager.cs" />
-    <Compile Include="Core\IDiskCoverPlugin.cs" />
-    <Compile Include="Core\IPluginEvents.cs" />
-    <Compile Include="Core\IViewModelsProvider.cs" />
-    <Compile Include="Core\UnityConfig.cs" />
-    <Compile Include="Core\UnityDependencyResolver.cs" />
-    <Compile Include="Core\ViewModelsProvider.cs" />
-    <Compile Include="CoverFinder\Implementations\AimpCoverFinder.cs" />
-    <Compile Include="CoverFinder\Interface\TrackInfo.cs" />
-    <Compile Include="CoverFinder\Interface\ICoverFinder.cs" />
-    <Compile Include="CoverFinder\Implementations\LastFM\LastFmFinder.cs" />
-    <Compile Include="CoverFinder\Implementations\Local\LocalCoverFinder.cs" />
+    <Compile Include="Infrastructure\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs" />
+    <Compile Include="Infrastructure\DiskCoverPlugin.cs" />
+    <Compile Include="Infrastructure\FinderEvents.cs" />
+    <Compile Include="Infrastructure\CoverFinderManager.cs" />
+    <Compile Include="Infrastructure\Algorithms.cs" />
+    <Compile Include="Infrastructure\DependencyResolver.cs" />
+    <Compile Include="Interfaces\ICoverFinderManager.cs" />
+    <Compile Include="Interfaces\IDiskCoverPlugin.cs" />
+    <Compile Include="Interfaces\IPluginEvents.cs" />
+    <Compile Include="Interfaces\IViewModelsProvider.cs" />
+    <Compile Include="Infrastructure\UnityConfig.cs" />
+    <Compile Include="Infrastructure\UnityDependencyResolver.cs" />
+    <Compile Include="Infrastructure\ViewModelsProvider.cs" />
+    <Compile Include="CoverFinder\AimpCoverFinder.cs" />
+    <Compile Include="CoverFinder\TrackInfo.cs" />
+    <Compile Include="Interfaces\ICoverFinder.cs" />
+    <Compile Include="CoverFinder\LastFmFinder.cs" />
+    <Compile Include="CoverFinder\LocalCoverFinder.cs" />
     <Compile Include="CoverWindow.xaml.cs">
       <DependentUpon>CoverWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AimpDiskCoverPlugin.cs" />
-    <Compile Include="Core\Native\Win32.cs" />
+    <Compile Include="Infrastructure\Native\Win32.cs" />
     <Compile Include="Localization.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -168,10 +168,10 @@
     </Compile>
     <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Resources\LocalizedData.cs" />
-    <Compile Include="Core\FindRule.cs" />
+    <Compile Include="Infrastructure\FindRule.cs" />
     <Compile Include="Settings\ConfigProvider.cs" />
-    <Compile Include="Settings\IConfigProvider.cs" />
-    <Compile Include="Settings\IPluginSettings.cs" />
+    <Compile Include="Interfaces\IConfigProvider.cs" />
+    <Compile Include="Interfaces\IPluginSettings.cs" />
     <Compile Include="Settings\OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>

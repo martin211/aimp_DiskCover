@@ -5,7 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AIMP.DiskCover.Annotations;
-using AIMP.DiskCover.Core;
+using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Interfaces;
 
 namespace AIMP.DiskCover.Settings
 {
