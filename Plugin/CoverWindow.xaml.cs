@@ -1,7 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using AIMP.DiskCover.Infrastructure;
+﻿using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.DiskCover.Settings;
 
 namespace AIMP.DiskCover
 {
@@ -26,9 +24,6 @@ namespace AIMP.DiskCover
         private IPluginSettings _settings;
         private IPluginEventsExecutor _pluginEventsExecutor;
 
-        [DllImport("msvcr120.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int _fpreset();
-
         /// <summary>
         /// The WPF image element that shows AIMP's bitmap.
         /// </summary>
@@ -51,7 +46,6 @@ namespace AIMP.DiskCover
         {
             try
             {
-                _fpreset();
                 InitializeComponent();
 
                 ShowInTaskbar = _settings.ShowInTaskbar;

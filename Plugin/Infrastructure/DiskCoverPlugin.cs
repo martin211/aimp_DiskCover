@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
 using AIMP.SDK;
@@ -29,6 +30,9 @@ namespace AIMP.DiskCover.Infrastructure
 
     public class DiskCoverPlugin : IDiskCoverPlugin, IDisposable
     {
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int _controlfp(int newControl, int mask);
+
         private readonly IAimpPlayer _player;
         private readonly ILogger _logger;
         private readonly IPluginSettings _settings;
@@ -66,6 +70,8 @@ namespace AIMP.DiskCover.Infrastructure
         public void Initialize()
         {
             _logger.Write("DiskCover: Initialize plugin");
+
+            _controlfp(0x9001F, 0xfffff);
 
             var res = _player.Core.RegisterExtension(_dialogFrame);
             if (res != AimpActionResult.Ok)

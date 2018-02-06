@@ -1,4 +1,4 @@
-﻿/// <binding AfterBuild='copy' />
+/// <binding AfterBuild='copy' />
 /*
 This file is the main entry point for defining Gulp tasks and using Gulp plugins.
 Click here to learn more. https://go.microsoft.com/fwlink/?LinkId=518007
@@ -16,13 +16,12 @@ var aimpFolder = "AIMP4.50";
 
 paths = {
     plugin: "./bin/" + configuration,
-    sdkInput: "../packages/AimpDotNet",
     output: "../../" + aimpFolder + "/Plugins/" + pluginName
 };
 
 var sdk = {
-    aimp_sdk: paths.sdkInput + "/AIMP.SDK.dll",
-    aimp_dotnet: paths.sdkInput + "/aimp_dotnet.dll"
+    aimp_sdk: paths.plugin + "/AIMP.SDK.dll",
+    aimp_dotnet: paths.plugin + "/aimp_dotnet.dll"
 };
 
 var langs = [
@@ -57,6 +56,7 @@ gulp.task("copy:plugin",
         gulp.src([
                 paths.plugin + "/*.dll",
                 "!" + paths.plugin + "/AIMP.SDK.dll",
+				"!" + paths.plugin + "/aimp_dotnet.dll",
                 "!" + paths.plugin + "/" + pluginName + ".dll"
             ])
             .pipe(gulp.dest(paths.output));
