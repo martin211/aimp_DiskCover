@@ -150,7 +150,7 @@ namespace AIMP.DiskCover.CoverFinder
             var artist = trackInfo.Artist;
             var title = trackInfo.Title;
 
-            if (trackInfo.IsStream)
+            if (trackInfo.IsStream && string.IsNullOrEmpty(trackInfo.Artist) && string.IsNullOrEmpty(trackInfo.Title))
             {
                 var s = trackInfo.Title.Split('-');
                 artist = s[0];
