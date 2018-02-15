@@ -217,9 +217,9 @@ namespace AIMP.DiskCover
 				
 
 				/// <summary>
-				/// Search for file cover.*
+				/// Search for file 'cover.*'
 				/// </summary>
-				[MarkupLocalization("Search for file cover.*")]
+				[MarkupLocalization("Search for file 'cover.*'")]
 				public static string CoverFile => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\CoverFile");
 				
 
@@ -231,9 +231,9 @@ namespace AIMP.DiskCover
 				
 
 				/// <summary>
-				/// Search for &lt;album name&gt;.*
+				/// Search for 'album name.*'
 				/// </summary>
-				[MarkupLocalization("Search for &lt;album name&gt;.*")]
+				[MarkupLocalization("Search for 'album name.*'")]
 				public static string AlbumFile => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\AlbumFile");
 				
 
@@ -269,9 +269,9 @@ namespace AIMP.DiskCover
 				
 
 				/// <summary>
-				/// Last.fm
+				/// Plugin: Disk Cover
 				/// </summary>
-				[MarkupLocalization("Last.fm")]
+				[MarkupLocalization("Plugin: Disk Cover")]
 				public static string Name => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverAlbumArtCatalogKey}\\Name");
 			}
 		}

@@ -239,6 +239,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Localization.cs</LastGenOutput>
     </Content>
+    <None Include="Resources\diskcover.png" />
     <Resource Include="npmPlaceholder.txt" />
     <None Include="Resources\lastfm.png" />
     <None Include="Resources\Image1.bmp" />

@@ -36,7 +36,7 @@ namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
 
         public Bitmap GetIcon()
         {
-            return Properties.Resources.lastfm;
+            return Properties.Resources.diskcover;
         }
 
         public string GetName()

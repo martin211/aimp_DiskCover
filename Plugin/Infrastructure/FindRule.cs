@@ -21,8 +21,6 @@ namespace AIMP.DiskCover.Infrastructure
         /// </summary>
         public static FindRule[] GetAvailableRules()
         {
-            Contract.Ensures(Contract.Result<FindRule[]>() != null);
-
             return new []
             {
                 new FindRule { Module = LocalCoverFinder.ModuleName, Rule = CoverRuleType.CoverFile },
@@ -56,6 +54,10 @@ namespace AIMP.DiskCover.Infrastructure
         /// Gets or sets Rule.
         /// </summary>
         public CoverRuleType Rule { get; set; }
+
+        public string Title => this.ToString();
+
+        public string ToolTipHelpText => "TODO:";
 
         /// <summary>
         /// Returns a <see cref="String"/> which represents a user-friendly instance name.

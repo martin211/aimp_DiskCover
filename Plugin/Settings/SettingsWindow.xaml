@@ -83,7 +83,18 @@
                              Grid.Row="1"
                              x:Name="lbApplied"
                              ItemsSource="{Binding AppliedRules, Mode=TwoWay}"
-                             SelectedItem="{Binding Path=SelectedAppliedRule, Mode=TwoWay}" />
+                             SelectedItem="{Binding Path=SelectedAppliedRule, Mode=TwoWay}" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock 
+                                            Padding="0,2"
+                                            Text="{Binding Title, Mode=OneWay}"
+                                            ToolTip="{Binding ToolTipHelpText, Mode=OneWay}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
                 </TabItem>
 
