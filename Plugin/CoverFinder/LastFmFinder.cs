@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK.Logger;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
@@ -22,6 +23,9 @@ namespace AIMP.DiskCover.CoverFinder
 
         private const string ApiKey = "f5610848fef2dc0abd449e6268acb1d2";
         private const string SecretKey = "a5008c1485f6639a9c4edfc7cc773e03";
+
+        // TODO: Use DI
+        private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
 
         private LastfmClient _client;
 
@@ -120,16 +124,19 @@ namespace AIMP.DiskCover.CoverFinder
 
         private async Task<LastTrack> GetTrackInfo(string artist, string track)
         {
+            Logger.Write($"Request [{ModuleName}-{nameof(GetTrackInfo)}]: artist {artist} track {track}");
             return await GetData(() => _client.Track.GetInfoAsync(track, artist, string.Empty));
         }
 
         private async Task<LastAlbum> GetAlbumInfo(string artist, string album)
         {
+            Logger.Write($"Request [{ModuleName}-{nameof(GetAlbumInfo)}]: artist {artist} album {album}");
             return await GetData(() => _client.Album.GetInfoAsync(artist, album, true));
         }
 
         private async Task<LastArtist> GetArtistInfo(string artist)
         {
+            Logger.Write($"Request [{ModuleName}-{nameof(GetArtistInfo)}]: artist {artist}");
             return await GetData(() => _client.Artist.GetInfoAsync(artist, "en", true));
         }
 
@@ -138,7 +145,9 @@ namespace AIMP.DiskCover.CoverFinder
             LastResponse<TData> data = await action();
             if (data.Status == LastResponseStatus.Successful)
             {
-                return data.Content;
+                var content = data.Content;
+                Logger.Write($"Response [{ModuleName}]: {content}");
+                return content;
             }
 
             return default(TData);

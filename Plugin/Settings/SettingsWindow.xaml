@@ -86,11 +86,10 @@
                              SelectedItem="{Binding Path=SelectedAppliedRule, Mode=TwoWay}" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel>
+                                    <StackPanel ToolTip="{Binding ToolTipHelpText, Mode=OneWay}">
                                         <TextBlock 
                                             Padding="0,2"
-                                            Text="{Binding Title, Mode=OneWay}"
-                                            ToolTip="{Binding ToolTipHelpText, Mode=OneWay}" />
+                                            Text="{Binding Title, Mode=OneWay}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -134,6 +133,31 @@
                                    Grid.Row="2"
                                    Text="{diskCover:Localizer Key='DiskCover.Options.CtrlDescription'}"
                                    Margin="5" />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="{diskCover:Localizer Key='DiskCover.Options.About'}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="45px"/>
+                                <RowDefinition Height="45px"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Authors'}" />
+                            <StackPanel Grid.Row="0" Grid.Column="1">
+                                <TextBlock>Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
+                                <TextBlock>Roman Nikitin</TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Version'}" />
+                            <StackPanel Grid.Row="1" Grid.Column="1">
+
+                            </StackPanel>
                         </Grid>
                     </StackPanel>
                 </TabItem>

@@ -119,6 +119,7 @@ namespace AIMP.DiskCover
 		private const string DiskCoverKey = "DiskCover";
 		private const string DiskCoverOptionsKey = "DiskCover.Options";
 		private const string DiskCoverAlbumArtCatalogKey = "DiskCover.AlbumArtCatalog";
+		private const string DiskCoverRulesKey = "DiskCover.Rules";
 		public class DiskCover
 		{
 			
@@ -263,6 +264,27 @@ namespace AIMP.DiskCover
 				/// </summary>
 				[MarkupLocalization("Enable debug mode")]
 				public static string DebugMode => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\DebugMode");
+				
+
+				/// <summary>
+				/// About plugin...
+				/// </summary>
+				[MarkupLocalization("About plugin...")]
+				public static string About => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\About");
+				
+
+				/// <summary>
+				/// Authors
+				/// </summary>
+				[MarkupLocalization("Authors")]
+				public static string Authors => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\Authors");
+				
+
+				/// <summary>
+				/// Version
+				/// </summary>
+				[MarkupLocalization("Version")]
+				public static string Version => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\Version");
 			}
 			public class AlbumArtCatalog
 			{
@@ -273,6 +295,37 @@ namespace AIMP.DiskCover
 				/// </summary>
 				[MarkupLocalization("Plugin: Disk Cover")]
 				public static string Name => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverAlbumArtCatalogKey}\\Name");
+			}
+			public class Rules
+			{
+				
+
+				/// <summary>
+				/// Finds a cover art at album folder
+				/// </summary>
+				[MarkupLocalization("Finds a cover art at album folder")]
+				public static string HelpCoverFile => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverRulesKey}\\HelpCoverFile");
+				
+
+				/// <summary>
+				/// Finds a cover art from Aimp player
+				/// </summary>
+				[MarkupLocalization("Finds a cover art from Aimp player")]
+				public static string HelpFromAimp => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverRulesKey}\\HelpFromAimp");
+				
+
+				/// <summary>
+				/// Finds a cover art at LastFM
+				/// </summary>
+				[MarkupLocalization("Finds a cover art at LastFM")]
+				public static string HelpLastFm => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverRulesKey}\\HelpLastFm");
+				
+
+				/// <summary>
+				/// Finds a cover art at album folder
+				/// </summary>
+				[MarkupLocalization("Finds a cover art at album folder")]
+				public static string HelpAlbumFile => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverRulesKey}\\HelpAlbumFile");
 			}
 		}
     }

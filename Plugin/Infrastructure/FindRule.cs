@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using AIMP.DiskCover.CoverFinder;
 
 namespace AIMP.DiskCover.Infrastructure
@@ -57,7 +56,24 @@ namespace AIMP.DiskCover.Infrastructure
 
         public string Title => this.ToString();
 
-        public string ToolTipHelpText => "TODO:";
+        public string ToolTipHelpText => GetHelpText();
+
+        private string GetHelpText()
+        {
+            switch (Rule)
+            {
+                case CoverRuleType.CoverFile:
+                    return Localization.DiskCover.Rules.HelpCoverFile;
+                case CoverRuleType.AIMP:
+                    return Localization.DiskCover.Rules.HelpFromAimp;
+                case CoverRuleType.AlbumFile:
+                    return Localization.DiskCover.Rules.HelpAlbumFile;
+                case CoverRuleType.LastFM:
+                    return Localization.DiskCover.Rules.HelpLastFm;
+            }
+
+            return string.Empty;
+        }
 
         /// <summary>
         /// Returns a <see cref="String"/> which represents a user-friendly instance name.
