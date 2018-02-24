@@ -285,6 +285,55 @@ namespace AIMP.DiskCover
 				/// </summary>
 				[MarkupLocalization("Version")]
 				public static string Version => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\Version");
+				
+
+				/// <summary>
+				/// Plugin
+				/// </summary>
+				[MarkupLocalization("Plugin")]
+				public static string PluginVersion => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\PluginVersion");
+				
+
+				/// <summary>
+				/// Commit
+				/// </summary>
+				[MarkupLocalization("Commit")]
+				public static string ShaCommit => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\ShaCommit");
+				
+
+				/// <summary>
+				/// Add rule
+				/// </summary>
+				[MarkupLocalization("Add rule")]
+				public static string AddRule => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\AddRule");
+				
+
+				/// <summary>
+				/// Remove rule
+				/// </summary>
+				[MarkupLocalization("Remove rule")]
+				public static string DeleteRule => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\DeleteRule");
+				
+
+				/// <summary>
+				/// Increase rule processing priority
+				/// </summary>
+				[MarkupLocalization("Increase rule processing priority")]
+				public static string UpRule => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\UpRule");
+				
+
+				/// <summary>
+				/// Decrease rule processing priority
+				/// </summary>
+				[MarkupLocalization("Decrease rule processing priority")]
+				public static string DownRule => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\DownRule");
+				
+
+				/// <summary>
+				/// Copy to clipboard
+				/// </summary>
+				[MarkupLocalization("Copy to clipboard")]
+				public static string CopyToClipboard => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverOptionsKey}\\CopyToClipboard");
 			}
 			public class AlbumArtCatalog
 			{

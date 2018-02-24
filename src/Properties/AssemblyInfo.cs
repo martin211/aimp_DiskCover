@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(AIMP.DiskCover.AimpDiskCoverPlugin.PluginName)]
+[assembly: AssemblyTitle("AIMP Disc Cover plugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -37,4 +37,6 @@ using System.Runtime.InteropServices;
     // app, or any theme specific resource dictionaries)
 )]*/
 
-[assembly: AssemblyVersion(AIMP.DiskCover.AimpDiskCoverPlugin.Version + ".*")]
+[assembly: AssemblyVersion("2.0.0.40")]
+[assembly: AssemblyInformationalVersion("2.0.0-nuke-integration.40+Branch.nuke_integration.Sha.ce368d0cefc401f81d62d9233ed01f71edfe553f")]
+[assembly: AssemblyFileVersion("2.0.0.40")]

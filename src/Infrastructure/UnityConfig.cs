@@ -34,7 +34,13 @@ namespace AIMP.DiskCover.Infrastructure
             container.RegisterType<IPluginEventsExecutor, PluginEvents>();
 
             container.RegisterInstance(player, new ContainerControlledLifetimeManager());
+#if DEBUG
             container.RegisterType<ILogger, FileLoggerManager>(new ContainerControlledLifetimeManager());
+#endif
+
+#if RELEASE
+            container.RegisterType<ILogger, InternalLoggerManager>(new ContainerControlledLifetimeManager());
+#endif
             container.RegisterType<ICoverFinderManager, CoverFinderManager>(new ContainerControlledLifetimeManager());
 
             RegisterAimpExtensions(container);

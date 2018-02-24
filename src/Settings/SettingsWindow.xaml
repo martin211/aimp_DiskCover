@@ -24,9 +24,11 @@
                     <StackPanel Margin="5">
                         <CheckBox IsChecked="{Binding EnableHotKeys, Mode=TwoWay}" Content="{diskCover:Localizer Key='DiskCover.Options.EnableResizeModeHotkeys'}" Margin="0 2"/>
                         <CheckBox IsChecked="{Binding ShowInTaskbar, Mode=TwoWay}" Content="{diskCover:Localizer Key='DiskCover.Options.DisplayIconInTaskbar'}" Margin="0 2"/>
-                        <Border>
-                            <CheckBox IsChecked="{Binding IsDebugMode, Mode=TwoWay}" Content="{diskCover:Localizer Key='DiskCover.Options.DebugMode'}" Margin="0 2"/>
-                        </Border>
+                        <GroupBox Header="Debug mode" Visibility="{Binding IsDebug}" Padding="5" Margin="0 5 0 0">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding IsDebugMode, Mode=TwoWay}" Content="{diskCover:Localizer Key='DiskCover.Options.DebugMode'}" Margin="0 2"/>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
                 </TabItem>
 
@@ -71,21 +73,28 @@
                             </StackPanel.Resources>
 
                             <Button Style="{StaticResource buttonStyle}"
+                                    ToolTip="{diskCover:Localizer Key='DiskCover.Options.AddRule'}"
                                 FontFamily="Marlett"
                                 Content="4"
+                                    Height="24"
                                 Command="{Binding AddRuleCommand}"/>
                             <Button Style="{StaticResource buttonStyle}"
+                                    ToolTip="{diskCover:Localizer Key='DiskCover.Options.DeleteRule'}"
                                 FontFamily="Marlett"
                                 Content="3"
+                                    Height="24"
                                 Command="{Binding DeleteRuleCommand}" />
                             <Button Style="{StaticResource buttonStyle}"
+                                    ToolTip="{diskCover:Localizer Key='DiskCover.Options.UpRule'}"
                                 FontFamily="Marlett"
                                 Content="5"
+                                    Height="24"
                                 Command="{Binding IncrementRuleCommand}" />
                             <Button FontFamily="Marlett"
+                                    ToolTip="{diskCover:Localizer Key='DiskCover.Options.DownRule'}"
                                 Style="{StaticResource buttonStyle}"
                                 Command="{Binding DecrementRuleCommand}"
-                                Content="6"/>
+                                Content="6" Height="24"/>
                         </StackPanel>
 
                         <Label Content="{diskCover:Localizer Key='DiskCover.Options.AppliedRules'}" Grid.Column="2" />
@@ -147,28 +156,27 @@
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{diskCover:Localizer Key='DiskCover.Options.About'}">
+                <TabItem Header="{diskCover:Localizer Key='DiskCover.Options.About'}" HorizontalAlignment="Left">
                     <StackPanel>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="45px"/>
-                                <RowDefinition Height="45px"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Padding="5" Grid.Row="0" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Authors'}" />
-                            <StackPanel Grid.Row="0" Grid.Column="1">
-                                <TextBlock Padding="5">Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
-                                <TextBlock Padding="5">Roman Nikitin</TextBlock>
+                        <GroupBox Header="{diskCover:Localizer Key='DiskCover.Options.Authors'}" Margin="5">
+                            <StackPanel>
+                                <TextBlock Padding="0 2">Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
+                                <TextBlock Padding="0 2">Roman Nikitin</TextBlock>
                             </StackPanel>
-                            <TextBlock Padding="5" Grid.Row="1" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Version'}" />
-                            <StackPanel Grid.Row="1" Grid.Column="1">
-
+                        </GroupBox>
+                        <GroupBox Header="{diskCover:Localizer Key='DiskCover.Options.Version'}" Margin="5">
+                            <StackPanel>
+                                <TextBlock Padding="0 2" Text="{Binding Version}"/>
+                                <TextBlock Padding="0 2"
+                                           TextWrapping="Wrap"
+                                           Text="{Binding InformationalVersion}"
+                                           Margin="0 0 0 5" />
+                                <Button Width="200" Height="24" Style="{StaticResource GrayButton}"
+                                        HorizontalAlignment="Left" 
+                                        Content="{diskCover:Localizer Key='DiskCover.Options.CopyToClipboard'}"
+                                        Command="{Binding CopyToClipboard}"/>
                             </StackPanel>
-                        </Grid>
+                        </GroupBox>
                     </StackPanel>
                 </TabItem>
             </TabControl>

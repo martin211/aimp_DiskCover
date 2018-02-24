@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 using AIMP.DiskCover.Annotations;
 using AIMP.DiskCover.Infrastructure;
@@ -133,6 +136,17 @@ namespace AIMP.DiskCover.Settings
             }
         }
 
+        public Visibility IsDebug
+        {
+            get
+            {
+#if DEBUG
+                return Visibility.Visible;
+#endif
+                return Visibility.Hidden;
+            }
+        }
+
         public FindRule SelectedAvailableRule { get; set; }
 
         public FindRule SelectedAppliedRule { get; set; }
@@ -144,6 +158,26 @@ namespace AIMP.DiskCover.Settings
             {
                 _rules = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string Version
+        {
+            get
+            {
+                var asm = Assembly.GetExecutingAssembly();
+                var ver = FileVersionInfo.GetVersionInfo(asm.Location);
+                return ver.FileVersion;
+            }
+        }
+
+        public string InformationalVersion
+        {
+            get
+            {
+                var asm = Assembly.GetExecutingAssembly();
+                var ver = FileVersionInfo.GetVersionInfo(asm.Location);
+                return ver.ProductVersion;
             }
         }
 
@@ -179,6 +213,16 @@ namespace AIMP.DiskCover.Settings
                 return _decrementRuleCommand ?? (_decrementRuleCommand = new RelayCommand(
                            c => DecrimentRulePosition(),
                            c => CanDownPosition));
+            }
+        }
+
+        private ICommand _copyToClipboard;
+
+        public ICommand CopyToClipboard
+        {
+            get
+            {
+                return _copyToClipboard ?? (_copyToClipboard = new RelayCommand(c => CopyInformationToClipboard()));
             }
         }
 
@@ -247,6 +291,11 @@ namespace AIMP.DiskCover.Settings
                 SelectedAppliedRule = AppliedRules.ElementAt(currentItemIndex + 1);
                 OnPropertyChanged(nameof(AppliedRules));
             }
+        }
+
+        private void CopyInformationToClipboard()
+        {
+            Clipboard.SetText(InformationalVersion);
         }
 
         private bool CanAddRule => AvailableRules.Any() && SelectedAvailableRule != null;
