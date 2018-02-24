@@ -40,3 +40,5 @@ bin
 Debug
 Release
 .vs
+/artifacts
+/.tmp

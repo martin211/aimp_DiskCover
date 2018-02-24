@@ -47,7 +47,17 @@
                         <ListBox Grid.Row="1" 
                              x:Name="lbAvailable"
                              ItemsSource="{Binding AvailableRules, Mode=TwoWay}"
-                             SelectedItem="{Binding Path=SelectedAvailableRule, Mode=TwoWay}"/>
+                             SelectedItem="{Binding Path=SelectedAvailableRule, Mode=TwoWay}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel ToolTip="{Binding ToolTipHelpText, Mode=OneWay}">
+                                        <TextBlock 
+                                            Padding="0,2"
+                                            Text="{Binding Title, Mode=OneWay}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
                         <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
                             <StackPanel.Resources>
@@ -149,12 +159,12 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Authors'}" />
+                            <TextBlock Padding="5" Grid.Row="0" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Authors'}" />
                             <StackPanel Grid.Row="0" Grid.Column="1">
-                                <TextBlock>Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
-                                <TextBlock>Roman Nikitin</TextBlock>
+                                <TextBlock Padding="5">Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
+                                <TextBlock Padding="5">Roman Nikitin</TextBlock>
                             </StackPanel>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Version'}" />
+                            <TextBlock Padding="5" Grid.Row="1" Grid.Column="0" Text="{diskCover:Localizer Key='DiskCover.Options.Version'}" />
                             <StackPanel Grid.Row="1" Grid.Column="1">
 
                             </StackPanel>
