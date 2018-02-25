@@ -71,8 +71,8 @@ class Build : NukeBuild
 
             if (string.IsNullOrWhiteSpace(inputFolder) || !Directory.Exists(inputFolder))
             {
-                Logger.Warn("Output folder not found or empty. Run Compile task...");
-                Execute<Build>(x => x.Compile);
+                Logger.Error("Output folder not found or empty. Run Compile task...");
+                return;
             }
 
             var files = Directory.GetFiles($"{inputFolder}", "*.dll")
@@ -91,7 +91,7 @@ class Build : NukeBuild
                 File.Copy(file, newFile);
             }
 
-            ProcessTasks.StartProcess(@"7z.exe", $"a {ArtifactsDirectory / "dotnet_diskcover.zip"} {ArtifactsDirectory / "*"}");
+            ProcessTasks.StartProcess(@"c:\Program Files\7-Zip\7z.exe", $"a {ArtifactsDirectory / "dotnet_diskcover.zip"} {ArtifactsDirectory / "*"}");
         });
 
     Target Version => _ => _
