@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskCover", "Plugin\DiskCover.csproj", "{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IF.Lastfm.Core", "lastfm\src\IF.Lastfm.Core\IF.Lastfm.Core.csproj", "{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ContinuousIntegration", "ContinuousIntegration", "{827270F3-FC3D-499C-B388-2C26D5A45196}"
+	ProjectSection(SolutionItems) = preProject
+		.gitlab-ci.yml = .gitlab-ci.yml
+		build\DiskCover.targets = build\DiskCover.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskCover", "src\DiskCover.csproj", "{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +23,35 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Debug|Win32.Build.0 = Debug|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{99F9BC3F-D7D9-46DD-90C3-E920CB3DCADA}.Release|Win32.Build.0 = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Debug|Win32.Build.0 = Debug|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Any CPU.Build.0 = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Win32.ActiveCfg = Release|Any CPU
+		{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CC807BF-E804-4D0E-8E8C-8A2D548AC030}
 	EndGlobalSection
 EndGlobal

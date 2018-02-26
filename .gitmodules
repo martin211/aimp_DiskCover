@@ -1,0 +1,4 @@
+[submodule "lastfm"]
+	path = lastfm
+	url = https://github.com/martin211/lastfm.git
+	branch = master
