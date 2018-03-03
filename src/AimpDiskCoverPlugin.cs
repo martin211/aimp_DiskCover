@@ -3,7 +3,6 @@ using System.IO;
 using System.Management;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
@@ -87,7 +86,8 @@ namespace AIMP.DiskCover
         {
             if (_pluginSettings.DebugMode)
             {
-                _logFileStream.WriteLine($"[{DateTime.Now:f}] {message}");
+                _logFileStream.WriteLine($"[{DateTime.Now:dd.MM.yy HH:mm:ss:ff}] {message}");
+
                 _logFileStream.Flush();
             }
         }
@@ -96,7 +96,7 @@ namespace AIMP.DiskCover
         {
             if (_pluginSettings.DebugMode)
             {
-                _logFileStream.WriteLine($"[{DateTime.Now:f}] {exception}");
+                _logFileStream.WriteLine($"[{DateTime.Now:dd.MM.yy HH:mm:ss:ff}] {exception}");
                 _logFileStream.Flush();
             }
         }

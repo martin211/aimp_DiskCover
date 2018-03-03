@@ -1,5 +1,4 @@
 using System.Linq;
-using AIMP.DiskCover.Settings;
 using AIMP.SDK.Player;
 using System.Collections.Generic;
 using System;
@@ -44,36 +43,56 @@ namespace AIMP.DiskCover
 
         private void LoadSettings()
         {
-            IsEnabled = _player.ServiceConfig.GetValueAsInt32(SettingEnabled) == 1;
             Height = _player.ServiceConfig.GetValueAsFloat(SettingHeight);
             Width = _player.ServiceConfig.GetValueAsFloat(SettingWidth);
+
+            var emptyConfig = Height == 0 && Width == 0;
+            if (emptyConfig)
+            {
+                Height = 200;
+                Width =  200;
+                IsEnabled = true;
+                DebugMode = false;
+
+                foreach (var rule in _rules)
+                {
+                    rule.Enabled = true;
+                }
+
+                AppliedRules = _rules;
+            }
+            else
+            {
+                IsEnabled = _player.ServiceConfig.GetValueAsInt32(SettingEnabled) == 1;
+                ShowInTaskbar = _player.ServiceConfig.GetValueAsInt32(SettingShowInTaskbar) == 1;
+                EnableHotKeys = _player.ServiceConfig.GetValueAsInt32(SettingEnableHotKeys) == 1;
+                DebugMode = _player.ServiceConfig.GetValueAsInt32(SettingDebug) == 1;
+
+                var rules = _player.ServiceConfig
+                    .GetValueAsString(SettingRules)
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(c =>
+                    {
+                        Enum.TryParse(c, out CoverRuleType type);
+                        return type;
+                    }).ToList();
+
+                var appliedRules = new List<FindRule>(_rules.Count);
+                foreach (var rule in _rules)
+                {
+                    rule.Enabled = rules.Any(c => rule.Rule == c);
+                }
+
+                foreach (var rule in rules)
+                {
+                    appliedRules.Add(_rules.Single(c => c.Rule == rule));
+                }
+
+                AppliedRules = appliedRules;
+            }
+
             Left = _player.ServiceConfig.GetValueAsFloat(SettingLeft);
             Top = _player.ServiceConfig.GetValueAsFloat(SettingTop);
-            ShowInTaskbar = _player.ServiceConfig.GetValueAsInt32(SettingShowInTaskbar) == 1;
-            EnableHotKeys = _player.ServiceConfig.GetValueAsInt32(SettingEnableHotKeys) == 1;
-            DebugMode = _player.ServiceConfig.GetValueAsInt32(SettingDebug) == 1;
-
-            var rules = _player.ServiceConfig
-                .GetValueAsString(SettingRules)
-                .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(c =>
-                {
-                    Enum.TryParse(c, out CoverRuleType type);
-                    return type;
-                }).ToList();
-
-            var appliedRules = new List<FindRule>(_rules.Count);
-            foreach (var rule in _rules)
-            {
-                rule.Enabled = rules.Any(c => rule.Rule == c);
-            }
-
-            foreach (var rule in rules)
-            {
-                appliedRules.Add(_rules.Single(c => c.Rule == rule));
-            }
-
-            AppliedRules = appliedRules;
         }
 
         /// <summary>
@@ -120,13 +139,7 @@ namespace AIMP.DiskCover
         /// Gets a collection of cover finding rules.
         /// </summary>
         [Pure]
-        public IEnumerable<FindRule> Rules
-        {
-            get
-            {
-                return _rules;
-            }
-        }
+        public IEnumerable<FindRule> Rules => _rules;
 
         public IEnumerable<FindRule> AppliedRules { get; set; }
 

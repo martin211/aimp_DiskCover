@@ -140,10 +140,7 @@ namespace AIMP.DiskCover.Settings
         {
             get
             {
-#if DEBUG
                 return Visibility.Visible;
-#endif
-                return Visibility.Hidden;
             }
         }
 

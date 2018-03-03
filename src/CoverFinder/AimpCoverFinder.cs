@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK.AlbumArtManager;
+using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.CoverFinder
@@ -16,6 +17,8 @@ namespace AIMP.DiskCover.CoverFinder
         public const string ModuleName = "AIMPCOVERART";
 
         private AutoResetEvent _resetEvent;
+
+        private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
 
         private Bitmap _result;
 
@@ -89,6 +92,7 @@ namespace AIMP.DiskCover.CoverFinder
                     _resetEvent.Set();
                 };
 
+            Logger.Write($"Request [{ModuleName}-{nameof(GetBitmap)}]: artist {player.CurrentFileInfo.Artist} track {player.CurrentFileInfo.Title}");
             player.AlbumArtManager.GetImage(player.CurrentFileInfo, AimpFindCovertArtType.None, null);
             _resetEvent.WaitOne(new TimeSpan(0, 0, 0, 20));
            

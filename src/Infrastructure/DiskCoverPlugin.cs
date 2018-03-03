@@ -237,7 +237,7 @@ namespace AIMP.DiskCover.Infrastructure
         public void Dispose()
         {
             _coverWindow?.Close();
-            //_player.MenuManager.Delete(_menuItem);
+            _player.Core.UnregisterExtension(_aimpExtensionAlbumArtCatalog);
             _logger.Close();
         }
     }

@@ -122,7 +122,7 @@ namespace AIMP.DiskCover.Infrastructure
 
             try
             {
-                _logger.Write($"Album: {trackInfo.Album}\tArtist: {trackInfo.Artist}\tTrack: {trackInfo.FileName}\tFile:{trackInfo.FileName}");
+                _logger.Write($"CORE: Album: {trackInfo.Album}\tArtist: {trackInfo.Artist}\tTrack: {trackInfo.Title}\tFile:{trackInfo.FileName}");
 
                 var enabledRules = _config.AppliedRules.ToList();
 
