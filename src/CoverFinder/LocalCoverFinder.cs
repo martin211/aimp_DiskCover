@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.CoverFinder
 {
@@ -14,32 +15,29 @@ namespace AIMP.DiskCover.CoverFinder
     {
         public const string ModuleName = "localfinder";
 
-        public string Name
-        {
-            get { return ModuleName; }
-        }
+        public string Name => ModuleName;
 
         public CoverRuleType RuleType => CoverRuleType.CoverFile;
 
-        public Bitmap GetBitmap(TrackInfo track)
+        public Bitmap GetBitmap(IAimpPlayer player)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule)
+        public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
         {
+            var trackInfo = new TrackInfo(player.CurrentFileInfo);
             Bitmap result = null;
 
             var fileDir = Path.GetDirectoryName(trackInfo.FileName);
 
-            if (String.IsNullOrEmpty(fileDir))
+            if (string.IsNullOrEmpty(fileDir))
             {
                 return null;
             }
 
             var dir = new DirectoryInfo(fileDir);
-
-            String searchPattern;
+            string searchPattern;
 
             if (concreteRule.Rule == CoverRuleType.AlbumFile)
             {
@@ -66,14 +64,13 @@ namespace AIMP.DiskCover.CoverFinder
             {
                 foreach (var cover in covers)
                 {
-                    Debug.WriteLine(String.Format("Loading image from HDD : {0}", cover.Name));
+                    Debug.WriteLine($"Loading image from HDD : {cover.Name}");
 
                     var ms = new MemoryStream(File.ReadAllBytes(cover.FullName));
                     try
                     {
                         result = (Bitmap)Image.FromStream(ms);
                         break;
-
                     }
                     catch (ArgumentException)
                     {
@@ -86,14 +83,16 @@ namespace AIMP.DiskCover.CoverFinder
             return result;
         }
 
-        public Task<Bitmap> GetBitmapAsync(TrackInfo track)
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(GetBitmap(player));
         }
 
-        public Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule)
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
         {
-            return Task.FromResult(GetBitmap(track, currentRule));
+            return Task.FromResult(GetBitmap(player, currentRule));
         }
     }
 }

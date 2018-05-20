@@ -22,7 +22,7 @@ namespace AIMP.DiskCover.CoverFinder
 
         private Bitmap _result;
 
-        private Object _lock;
+        private readonly Object _lock;
 
         private Bitmap Result
         {
@@ -52,56 +52,50 @@ namespace AIMP.DiskCover.CoverFinder
             _lock = new object();
         }
 
-        /// <summary>
-        /// Gets or sets finder name.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return ModuleName;
-            }
-        }
+        /// <inheritdoc />
+        public string Name => ModuleName;
 
+        /// <inheritdoc />
         public CoverRuleType RuleType => CoverRuleType.AIMP;
-        public Bitmap GetBitmap(TrackInfo track)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Bitmap GetBitmap(TrackInfo track, FindRule currentRule)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Bitmap> GetBitmapAsync(TrackInfo track)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <inheritdoc />
         public Bitmap GetBitmap(IAimpPlayer player)
         {
-            player.AlbumArtManager.Completed += (sender, args) =>
-                {
-                    Result = args.CoverImage;
-                    _resetEvent.Set();
-                };
+            return GetBitmap(player, null);
+        }
 
-            Logger.Write($"Request [{ModuleName}-{nameof(GetBitmap)}]: artist {player.CurrentFileInfo.Artist} track {player.CurrentFileInfo.Title}");
+        /// <inheritdoc />
+        public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
+        {
+            var cover = player.CurrentFileInfo?.AlbumArt;
+            if (cover != null)
+            {
+                return cover;
+            }
+
+            player.AlbumArtManager.Completed += (sender, args) =>
+            {
+                Result = args.CoverImage;
+                _resetEvent.Set();
+            };
+
+            Logger.Write($"Request [{ModuleName}-{nameof(GetBitmap)}]: artist {player.CurrentFileInfo?.Artist} track {player.CurrentFileInfo?.Title}");
             player.AlbumArtManager.GetImage(player.CurrentFileInfo, AimpFindCovertArtType.None, null);
             _resetEvent.WaitOne(new TimeSpan(0, 0, 0, 20));
-           
+
             return Result;
         }
 
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
         {
-            return GetBitmap(player);
+            return GetBitmapAsync(player, null);
+        }
+
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
+        {
+            return Task.FromResult(player.CurrentFileInfo?.AlbumArt);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
-using AIMP.DiskCover.CoverFinder;
 using AIMP.DiskCover.Infrastructure;
+using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.Interfaces
 {
@@ -12,14 +12,35 @@ namespace AIMP.DiskCover.Interfaces
         /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// Gets the type of the rule.
+        /// </summary>
         CoverRuleType RuleType { get; }
 
-        Bitmap GetBitmap(TrackInfo track);
+        /// <summary>
+        /// Gets the bitmap.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        Bitmap GetBitmap(IAimpPlayer player);
 
-        Bitmap GetBitmap(TrackInfo track, FindRule currentRule);
+        /// <summary>
+        /// Gets the bitmap.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="currentRule">The current rule.</param>
+        Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule);
 
-        Task<Bitmap> GetBitmapAsync(TrackInfo track);
+        /// <summary>
+        /// Gets the bitmap asynchronous.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        Task<Bitmap> GetBitmapAsync(IAimpPlayer player);
 
-        Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule);
+        /// <summary>
+        /// Gets the bitmap asynchronous.
+        /// </summary>
+        /// <param name="player">The player.</param>
+        /// <param name="currentRule">The current rule.</param>
+        Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule);
     }
 }

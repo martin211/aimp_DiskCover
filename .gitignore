@@ -42,3 +42,4 @@ Release
 .vs
 /artifacts
 /.tmp
+*.user

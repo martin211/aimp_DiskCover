@@ -160,7 +160,7 @@ namespace AIMP.DiskCover.Infrastructure
                         break;
                     }
 
-                    result = finder.GetBitmap(trackInfo, rule);
+                    result = finder.GetBitmap(_aimpPlayer, rule);
 
                     if (result != null)
                     {

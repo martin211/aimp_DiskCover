@@ -9,6 +9,7 @@ using System.Windows;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK.Logger;
+using AIMP.SDK.Player;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
@@ -25,38 +26,49 @@ namespace AIMP.DiskCover.CoverFinder
         private const string ApiKey = "f5610848fef2dc0abd449e6268acb1d2";
         private const string SecretKey = "a5008c1485f6639a9c4edfc7cc773e03";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LastFmFinder"/> class.
+        /// </summary>
+        public LastFmFinder()
+        {
+            _client = new LastfmClient(ApiKey, SecretKey);
+        }
+
         // TODO: Use DI
         private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
 
-        private LastfmClient _client;
+        private readonly LastfmClient _client;
 
-        public String Name
-        {
-            get { return ModuleName; }
-        }
+        /// <inheritdoc />
+        public string Name => ModuleName;
 
+        /// <inheritdoc />
         public CoverRuleType RuleType => CoverRuleType.LastFM;
 
-        public Bitmap GetBitmap(TrackInfo trackInfo)
+        /// <inheritdoc />
+        public Bitmap GetBitmap(IAimpPlayer player)
         {
-            return GetBitmap(trackInfo, null);
+            return GetBitmap(player, null);
         }
 
-        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule currentRule)
+        /// <inheritdoc />
+        public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
         {
-            return GetBitmapAsync(trackInfo, currentRule).Result;
+            return GetBitmapAsync(player, currentRule).Result;
         }
 
-        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo)
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
         {
-            return GetBitmapAsync(trackInfo, null);
+            return GetBitmapAsync(player, null);
         }
 
-        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo, FindRule currentRule)
+        /// <inheritdoc />
+        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
         {
             try
             {
-                return GetTrackCoverAsync(trackInfo, currentRule);
+                return GetTrackCoverAsync(player, currentRule);
             }
             catch (Exception ex)
             {
@@ -67,11 +79,6 @@ namespace AIMP.DiskCover.CoverFinder
             }
 
             return null;
-        }
-
-        public LastFmFinder()
-        {
-            _client = new LastfmClient(ApiKey, SecretKey);
         }
 
         private Bitmap DownloadImage(Uri uri)
@@ -155,8 +162,10 @@ namespace AIMP.DiskCover.CoverFinder
             return default(TData);
         }
 
-        private async Task<Bitmap> GetTrackCoverAsync(TrackInfo trackInfo, FindRule currentRule)
+        private async Task<Bitmap> GetTrackCoverAsync(IAimpPlayer player, FindRule currentRule)
         {
+            var trackInfo = new TrackInfo(player.CurrentFileInfo);
+
             var album = trackInfo.Album;
             var artist = trackInfo.Artist;
             var title = trackInfo.Title;
