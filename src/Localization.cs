@@ -120,6 +120,7 @@ namespace AIMP.DiskCover
 		private const string DiskCoverOptionsKey = "DiskCover.Options";
 		private const string DiskCoverAlbumArtCatalogKey = "DiskCover.AlbumArtCatalog";
 		private const string DiskCoverRulesKey = "DiskCover.Rules";
+		private const string DiskCoverContextMenuKey = "DiskCover.ContextMenu";
 		public class DiskCover
 		{
 			
@@ -375,6 +376,16 @@ namespace AIMP.DiskCover
 				/// </summary>
 				[MarkupLocalization("Finds a cover art at album folder")]
 				public static string HelpAlbumFile => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverRulesKey}\\HelpAlbumFile");
+			}
+			public class ContextMenu
+			{
+				
+
+				/// <summary>
+				/// Save to tags
+				/// </summary>
+				[MarkupLocalization("Save to tags")]
+				public static string SaveToTags => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverContextMenuKey}\\SaveToTags");
 			}
 		}
     }

@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using AIMP.DiskCover.Interfaces;
-using AIMP.DiskCover.Settings;
 using AIMP.SDK;
 using AIMP.SDK.AlbumArtManager;
 using AIMP.SDK.Logger;
 using AIMP.SDK.MenuManager;
+using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 using AIMP.SDK.Threading;
@@ -30,6 +30,21 @@ namespace AIMP.DiskCover.Infrastructure
 
     public class DiskCoverPlugin : IDiskCoverPlugin, IDisposable
     {
+        private class AimpMessageHook : IAimpMessageHook
+        {
+            private readonly Func<AimpMessages.AimpCoreMessageType, int, int, AimpActionResult> _coreMessage;
+
+            public AimpMessageHook(Func<AimpMessages.AimpCoreMessageType, int, int, AimpActionResult> coreMessage)
+            {
+                _coreMessage = coreMessage;
+            }
+
+            public AimpActionResult CoreMessage(AimpMessages.AimpCoreMessageType message, int param1, int param2)
+            {
+                return _coreMessage(message, param1, param2);
+            }
+        }
+
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int _controlfp(int newControl, int mask);
 
@@ -86,8 +101,7 @@ namespace AIMP.DiskCover.Infrastructure
             }
 
             InitMenu();
-
-            _player.Core.CoreMessage += CoreOnCoreMessage;
+            _player.ServiceMessageDispatcher.Hook(new AimpMessageHook(CoreOnCoreMessage));
             _player.StateChanged += PlayerOnStateChanged;
             _player.TrackChanged += PlayerOnTrackChanged;
             _pluginEvents.ConfigUpdated += (sender, args) => { };
@@ -118,7 +132,7 @@ namespace AIMP.DiskCover.Infrastructure
             _coverFinderManager.BeginRequest += OnBeginFindCoverRequest;
             _coverFinderManager.EndRequest += OnEndFindCoverRequest;
             // TODO: Extract to provider and use DI
-            _coverWindow = new CoverWindow(_settings, _pluginEventsExecutor)
+            _coverWindow = new CoverWindow(_settings, _pluginEventsExecutor, _player)
             {
                 MinHeight = 200,
                 MinWidth = 200,
@@ -203,12 +217,14 @@ namespace AIMP.DiskCover.Infrastructure
             }
         }
 
-        private void CoreOnCoreMessage(AimpMessages.AimpCoreMessageType param1, int param2)
+        private AimpActionResult CoreOnCoreMessage(AimpMessages.AimpCoreMessageType message, int param1, int param2)
         {
-            if (param1 == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START || param1 == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START_SUBTRACK)
+            if (message == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START || message == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START_SUBTRACK)
             {
                 RequestFreshCoverImage();
             }
+
+            return AimpActionResult.Ok;
         }
 
         private void RequestFreshCoverImage()

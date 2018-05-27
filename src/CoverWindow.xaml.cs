@@ -1,5 +1,9 @@
-﻿using AIMP.DiskCover.Infrastructure;
+﻿using AIMP.DiskCover.CoverFinder;
+using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
+using AIMP.SDK.Player;
+using AIMP.SDK.TagEditor;
 
 namespace AIMP.DiskCover
 {
@@ -23,6 +27,7 @@ namespace AIMP.DiskCover
         private Bitmap _coverImage;
         private IPluginSettings _settings;
         private IPluginEventsExecutor _pluginEventsExecutor;
+        private readonly IAimpPlayer _player;
 
         /// <summary>
         /// The WPF image element that shows AIMP's bitmap.
@@ -35,10 +40,11 @@ namespace AIMP.DiskCover
             }
         }
 
-        public CoverWindow(IPluginSettings settings, IPluginEventsExecutor pluginEventsExecutor)
+        public CoverWindow(IPluginSettings settings, IPluginEventsExecutor pluginEventsExecutor, IAimpPlayer player)
         {
             _settings = settings;
             _pluginEventsExecutor = pluginEventsExecutor;
+            _player = player;
             Init();
         }
 
@@ -96,7 +102,7 @@ namespace AIMP.DiskCover
 
         public void Show(IntPtr parent)
         {
-            
+
         }
 
         private void ResizeImage()
@@ -399,7 +405,26 @@ namespace AIMP.DiskCover
                 if (height > MaxHeight)
                 {
                     width = height = MaxHeight;
-                }                
+                }
+            }
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var currentFile = _player.CurrentFileInfo;
+            var fi = new TrackInfo(currentFile);
+            if (!string.IsNullOrWhiteSpace(fi.FileName) && !fi.IsStream)
+            {
+                if (_player.ServiceFileTagEditor.EditFile(fi.FileName, out var editor) == AimpActionResult.Ok &&
+                    editor != null)
+                {
+                    if (editor.GetTagCount() > 0)
+                    {
+                        editor.GetMixedInfo(out var fileInfo);
+                        fileInfo.AlbumArt = _coverImage;
+                        editor.Save();
+                    }
+                }
             }
         }
     }

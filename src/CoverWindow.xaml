@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:diskCover="clr-namespace:AIMP.DiskCover"
         mc:Ignorable="d" 
         WindowStyle="None"
         WindowState="Normal" 
@@ -165,9 +166,13 @@
                     HorizontalAlignment="Center" 
                     Name="coverImage" 
                     Stretch="Fill" 
-                    VerticalAlignment="Center"
-                    
-                    />
+                    VerticalAlignment="Center">
+                    <Image.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{diskCover:Localizer Key='DiskCover.ContextMenu.SaveToTags'}" Click="MenuItem_OnClick"/>
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
                 <!--MaxHeight="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"-->
 
