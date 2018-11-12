@@ -1,18 +1,35 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Nuke.Common.Tools;
+using ICSharpCode.SharpZipLib.Zip;
+using Nuke.Common;
+using Nuke.Common.Git;
+using Nuke.Common.IO;
+using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.GitVersion;
-using Nuke.Common.Tools.NuGet;
-using Nuke.Core;
-using Nuke.Core.Tooling;
+using Nuke.Common.Tools.MSBuild;
+using static Nuke.Common.EnvironmentInfo;
+using static Nuke.Common.IO.FileSystemTasks;
+using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
-using static Nuke.Core.IO.FileSystemTasks;
-using static Nuke.Core.IO.PathConstruction;
 
 class Build : NukeBuild
 {
+    public static int Main() => Execute<Build>(x => x.Compile);
+
+    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
+    readonly string Configuration = IsLocalBuild ? "Debug" : "Release";
+
+    [Solution("DiskCover.sln")] readonly Solution Solution;
+    [GitRepository] readonly GitRepository GitRepository;
+    [GitVersion] readonly GitVersion GitVersion;
+
+    AbsolutePath SourceDirectory => RootDirectory / "src";
+    AbsolutePath TestsDirectory => RootDirectory / "tests";
+    AbsolutePath OutputDirectory => RootDirectory / "output";
+
     readonly IEnumerable<string> _excludedArtifactFiles = new[]
     {
         "AutoMapper.dll",
@@ -22,51 +39,42 @@ class Build : NukeBuild
         "JetBrains.Annotations.dll"
     };
 
-    // Console application entry. Also defines the default target.
-    public static int Main() => Execute<Build>(x => x.Compile);
-
-    // Auto-injection fields:
-
-    //[GitVersion] readonly GitVersion GitVersion;
-    // Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
-
-    // [GitRepository] readonly GitRepository GitRepository;
-    // Parses origin, branch name and head from git config.
-
-    // [Parameter] readonly string MyGetApiKey;
-    // Returns command-line arguments and environment variables.
-
     Target Clean => _ => _
-            .OnlyWhen(() => false) // Disabled for safety.
-            .Executes(() =>
-            {
-                DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
-                EnsureCleanDirectory(OutputDirectory);
-            });
-
-    Target Restore => _ => _
-            .DependsOn(Clean)
-            .Executes(() =>
-            {
-                MSBuild(s => DefaultMSBuildRestore);
-                NuGetTasks.NuGetRestore();
-            });
-
-    Target Compile => _ => _
-            .DependsOn(Restore)
-            .DependsOn(Version)
-            .Executes(() =>
-            {
-                MSBuild(s => DefaultMSBuildCompile);
-            });
-
-    Target CopyArtifacts => _ => _
-        //.DependsOn(Compile)
         .Executes(() =>
         {
-            DeleteDirectories(new[] { ArtifactsDirectory.ToString() });
-            var outputFolder = ArtifactsDirectory / "dotnet_diskcover";
-            Directory.CreateDirectory(outputFolder);
+            DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
+            DeleteDirectories(GlobDirectories(TestsDirectory, "**/bin", "**/obj"));
+            EnsureCleanDirectory(OutputDirectory);
+        });
+
+    Target Restore => _ => _
+        .DependsOn(Clean)
+        .Executes(() =>
+        {
+            MSBuild(s => s
+                .SetTargetPath(Solution)
+                .SetTargets("Restore"));
+        });
+
+    Target Compile => _ => _
+        .DependsOn(Restore)
+        .Executes(() =>
+        {
+            MSBuild(s => s
+                .SetTargetPath(Solution)
+                .SetTargets("Rebuild")
+                .SetConfiguration(Configuration)
+                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
+                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetMaxCpuCount(Environment.ProcessorCount)
+                .SetNodeReuse(IsLocalBuild));
+        });
+
+    Target Copy => _ => _
+        .DependsOn(Compile)
+        .Executes(() =>
+        {
             var inputFolder = GlobDirectories(SourceDirectory, $"**/bin/{Configuration}").FirstOrDefault();
 
             if (string.IsNullOrWhiteSpace(inputFolder) || !Directory.Exists(inputFolder))
@@ -80,10 +88,10 @@ class Build : NukeBuild
 
             foreach (var file in files)
             {
-                var newFile = outputFolder / Path.GetFileName(file);
+                var newFile = OutputDirectory / Path.GetFileName(file);
                 if (file.EndsWith("aimp_dotnet.dll"))
                 {
-                    newFile = outputFolder / "dotnet_diskcover.dll";
+                    newFile = OutputDirectory / "dotnet_diskcover.dll";
                 }
 
                 Logger.Info($"Copy '{file}' to '{newFile}'");
@@ -91,12 +99,12 @@ class Build : NukeBuild
                 File.Copy(file, newFile);
             }
 
-            ProcessTasks.StartProcess(@"c:\Program Files\7-Zip\7z.exe", $"a {ArtifactsDirectory / "dotnet_diskcover.zip"} {ArtifactsDirectory / "*"}");
+            FileSystemTasks.CopyDirectoryRecursively(SourceDirectory / "langs", OutputDirectory / "langs");
         });
 
     Target Version => _ => _
         .Executes(() =>
         {
-            ProcessTasks.StartProcess(GitVersionTasks.DefaultGitVersion.ToolPath, $"/updateassemblyinfo {SourceDirectory / "Properties" / "AssemblyInfo.cs"}");
+            ProcessTasks.StartProcess(GitVersionTasks.GitVersionPath, $"/updateassemblyinfo {SourceDirectory / "Properties" / "AssemblyInfo.cs"}");
         });
 }
