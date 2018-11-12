@@ -26,7 +26,6 @@ class Build : NukeBuild
     [GitVersion] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
-    AbsolutePath TestsDirectory => RootDirectory / "tests";
     AbsolutePath OutputDirectory => RootDirectory / "output";
 
     readonly IEnumerable<string> _excludedArtifactFiles = new[]
@@ -42,7 +41,6 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
-            DeleteDirectories(GlobDirectories(TestsDirectory, "**/bin", "**/obj"));
             EnsureCleanDirectory(OutputDirectory);
         });
 
