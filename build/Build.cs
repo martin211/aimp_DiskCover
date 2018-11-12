@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ICSharpCode.SharpZipLib.Zip;
 using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
