@@ -9,6 +9,7 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
+using Nuke.Common.Tools.NuGet;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -48,9 +49,14 @@ class Build : NukeBuild
         .DependsOn(Clean)
         .Executes(() =>
         {
-            MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Restore"));
+            //MSBuild(s => s
+            //    .SetTargetPath(Solution)
+            //    .SetTargets("Restore"));
+            Directory.CreateDirectory(RootDirectory / "packages");
+            var config = new NuGetRestoreSettings();
+            var nuGetRestoreSettings = config.SetPackagesDirectory(RootDirectory / "packages");
+
+            NuGetTasks.NuGetRestore(c => nuGetRestoreSettings);
         });
 
     Target Compile => _ => _
@@ -68,8 +74,8 @@ class Build : NukeBuild
                 .SetNodeReuse(IsLocalBuild));
         });
 
-    Target Copy => _ => _
-        .DependsOn(Compile)
+    Target Pack => _ => _
+        .DependsOn(Version, Compile)
         .Executes(() =>
         {
             var inputFolder = GlobDirectories(SourceDirectory, $"**/bin/{Configuration}").FirstOrDefault();
