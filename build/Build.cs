@@ -34,7 +34,6 @@ class Build : NukeBuild
         "AutoMapper.dll",
         "Colorful.Console.dll",
         "Glob.dll",
-        "Newtonsoft.Json.dll",
         "JetBrains.Annotations.dll"
     };
 
