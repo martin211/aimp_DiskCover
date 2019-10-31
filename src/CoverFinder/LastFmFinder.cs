@@ -4,11 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.Logger;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
@@ -29,10 +31,7 @@ namespace AIMP.DiskCover.CoverFinder
 
         private LastfmClient _client;
 
-        public String Name
-        {
-            get { return ModuleName; }
-        }
+        public string Name => ModuleName;
 
         public CoverRuleType RuleType => CoverRuleType.LastFM;
 
@@ -96,7 +95,7 @@ namespace AIMP.DiskCover.CoverFinder
             return bitmap;
         }
 
-        private static Stream GetImageStream(Uri url)
+        private Stream GetImageStream(Uri url)
         {
             Stream stream;
             if ((object)url == null)
@@ -105,21 +104,42 @@ namespace AIMP.DiskCover.CoverFinder
             }
             else
             {
-                WebRequest webRequest = WebRequest.CreateDefault(url);
-                webRequest.Method = "GET";
-                WebResponse response;
+                ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                       | SecurityProtocolType.Tls11
+                                                       | SecurityProtocolType.Tls12
+                                                       | SecurityProtocolType.Ssl3;
+
+                HttpClient client = new HttpClient();
+                var t = client.GetAsync(url);
+                t.Wait();
+                var response = t.Result;
+
                 try
                 {
-                    response = webRequest.GetResponse();
+                    response.EnsureSuccessStatusCode();
+                    var d = response.Content.ReadAsStreamAsync();
+                    d.Wait();
+                    stream = d.Result;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Logger.Write(e);
                     return null;
                 }
-
-                stream = response.GetResponseStream();
             }
+
             return stream;
+        }
+
+        public bool ValidateServerCertificate(
+            object sender,
+            X509Certificate certificate,
+            X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
         private async Task<LastTrack> GetTrackInfo(string artist, string track)
@@ -150,7 +170,7 @@ namespace AIMP.DiskCover.CoverFinder
                 return content;
             }
 
-            return default(TData);
+            return default;
         }
 
         private async Task<Bitmap> GetTrackCoverAsync(TrackInfo trackInfo, FindRule currentRule)

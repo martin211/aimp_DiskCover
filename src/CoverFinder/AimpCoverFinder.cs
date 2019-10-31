@@ -19,7 +19,7 @@ namespace AIMP.DiskCover.CoverFinder
 
         private Bitmap _result;
 
-        private Object _lock;
+        private object _lock;
 
         private Bitmap Result
         {
@@ -52,13 +52,7 @@ namespace AIMP.DiskCover.CoverFinder
         /// <summary>
         /// Gets or sets finder name.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return ModuleName;
-            }
-        }
+        public string Name => ModuleName;
 
         public CoverRuleType RuleType => CoverRuleType.AIMP;
         public Bitmap GetBitmap(TrackInfo track)

@@ -26,7 +26,7 @@ namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
             var result = _player.ServiceThreadPool.Execute(new AimpTask(() =>
             {
                 img = _coverFinderManager.FindCoverImage(fileInfo);
-                return AimpActionResult.Ok;
+                return AimpActionResult.OK;
             }), out taskId);
 
             _player.ServiceThreadPool.WaitFor(taskId);
@@ -51,7 +51,7 @@ namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
             var result = _player.ServiceThreadPool.Execute(new AimpTask(() =>
             {
                 img = _coverFinderManager.FindCoverImage(fileUrl, artist, album);
-                return AimpActionResult.Ok;
+                return AimpActionResult.OK;
             }), out taskId);
 
             _player.ServiceThreadPool.WaitFor(taskId);

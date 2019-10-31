@@ -14,10 +14,10 @@ namespace AIMP.DiskCover.CoverFinder
     {
         public const string ModuleName = "localfinder";
 
-        public string Name
-        {
-            get { return ModuleName; }
-        }
+        public string Name => ModuleName;
+
+        // TODO: Use DI
+        private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
 
         public CoverRuleType RuleType => CoverRuleType.CoverFile;
 
@@ -32,14 +32,14 @@ namespace AIMP.DiskCover.CoverFinder
 
             var fileDir = Path.GetDirectoryName(trackInfo.FileName);
 
-            if (String.IsNullOrEmpty(fileDir))
+            if (string.IsNullOrEmpty(fileDir))
             {
                 return null;
             }
 
             var dir = new DirectoryInfo(fileDir);
 
-            String searchPattern;
+            string searchPattern;
 
             if (concreteRule.Rule == CoverRuleType.AlbumFile)
             {
@@ -51,7 +51,7 @@ namespace AIMP.DiskCover.CoverFinder
             }
             else
             {
-                throw new NotSupportedException("The " + concreteRule.Rule + " rule cannot be handled by this method.");
+                throw new NotSupportedException($"The {concreteRule.Rule} rule cannot be handled by this method.");
             }
 
             // In case the pattern is not correct for the file system, do not proceed further.
@@ -66,7 +66,7 @@ namespace AIMP.DiskCover.CoverFinder
             {
                 foreach (var cover in covers)
                 {
-                    Debug.WriteLine(String.Format("Loading image from HDD : {0}", cover.Name));
+                    Debug.WriteLine($"Loading image from HDD : {cover.Name}");
 
                     var ms = new MemoryStream(File.ReadAllBytes(cover.FullName));
                     try
@@ -75,8 +75,9 @@ namespace AIMP.DiskCover.CoverFinder
                         break;
 
                     }
-                    catch (ArgumentException)
+                    catch (ArgumentException e)
                     {
+                        Logger.Write(e);
                         // Means that this is not an image or this format is not supported.
                         ms.Dispose();
                     }

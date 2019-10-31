@@ -10,6 +10,6 @@ namespace AIMP.DiskCover.Infrastructure
             CoverBitmap = cover;
         }
 
-        public Bitmap CoverBitmap { get; private set; }
+        public Bitmap CoverBitmap { get; }
     }
 }
