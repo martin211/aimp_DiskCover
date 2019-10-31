@@ -1,5 +1,4 @@
 using System.Linq;
-using AIMP.DiskCover.Settings;
 using AIMP.SDK.Player;
 using System.Collections.Generic;
 using System;
@@ -120,13 +119,7 @@ namespace AIMP.DiskCover
         /// Gets a collection of cover finding rules.
         /// </summary>
         [Pure]
-        public IEnumerable<FindRule> Rules
-        {
-            get
-            {
-                return _rules;
-            }
-        }
+        public IEnumerable<FindRule> Rules => _rules;
 
         public IEnumerable<FindRule> AppliedRules { get; set; }
 

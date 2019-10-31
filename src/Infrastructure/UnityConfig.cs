@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using AIMP.DiskCover.Infrastructure.Logger;
 using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
-using AIMP.SDK.Logger;
 using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 using Unity;
@@ -13,7 +13,8 @@ namespace AIMP.DiskCover.Infrastructure
     internal static class UnityConfig
     {
         private const string _matchingInternalTypePattern = "AIMP.DiskCover";
-        public static void Iitialize(IAimpPlayer player)
+
+        public static void Initialize(IAimpPlayer player)
         {
             var container = new UnityContainer();
 
