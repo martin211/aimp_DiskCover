@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ContinuousIntegration", "ContinuousIntegration", "{827270F3-FC3D-499C-B388-2C26D5A45196}"
-	ProjectSection(SolutionItems) = preProject
-		.gitlab-ci.yml = .gitlab-ci.yml
-		build\DiskCover.targets = build\DiskCover.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aimp_DiskCover", "src\Aimp_DiskCover.csproj", "{764BAAE0-3F13-4C5A-A81D-0ED619CC9797}"
 EndProject
 Global
