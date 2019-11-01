@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.CoverFinder
 {
@@ -17,16 +16,18 @@ namespace AIMP.DiskCover.CoverFinder
 
         public string Name => ModuleName;
 
+        // TODO: Use DI
+        private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
+
         public CoverRuleType RuleType => CoverRuleType.CoverFile;
 
-        public Bitmap GetBitmap(IAimpPlayer player)
+        public Bitmap GetBitmap(TrackInfo track)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule concreteRule)
+        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule concreteRule)
         {
-            var trackInfo = new TrackInfo(player.CurrentFileInfo);
             Bitmap result = null;
 
             var fileDir = Path.GetDirectoryName(trackInfo.FileName);
@@ -37,6 +38,7 @@ namespace AIMP.DiskCover.CoverFinder
             }
 
             var dir = new DirectoryInfo(fileDir);
+
             string searchPattern;
 
             if (concreteRule.Rule == CoverRuleType.AlbumFile)
@@ -49,7 +51,7 @@ namespace AIMP.DiskCover.CoverFinder
             }
             else
             {
-                throw new NotSupportedException("The " + concreteRule.Rule + " rule cannot be handled by this method.");
+                throw new NotSupportedException($"The {concreteRule.Rule} rule cannot be handled by this method.");
             }
 
             // In case the pattern is not correct for the file system, do not proceed further.
@@ -71,9 +73,11 @@ namespace AIMP.DiskCover.CoverFinder
                     {
                         result = (Bitmap)Image.FromStream(ms);
                         break;
+
                     }
-                    catch (ArgumentException)
+                    catch (ArgumentException e)
                     {
+                        Logger.Write(e);
                         // Means that this is not an image or this format is not supported.
                         ms.Dispose();
                     }
@@ -83,16 +87,14 @@ namespace AIMP.DiskCover.CoverFinder
             return result;
         }
 
-        /// <inheritdoc />
-        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track)
         {
-            return Task.FromResult(GetBitmap(player));
+            throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
-        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
+        public Task<Bitmap> GetBitmapAsync(TrackInfo track, FindRule currentRule)
         {
-            return Task.FromResult(GetBitmap(player, currentRule));
+            return Task.FromResult(GetBitmap(track, currentRule));
         }
     }
 }

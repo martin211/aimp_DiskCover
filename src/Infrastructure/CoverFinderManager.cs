@@ -9,9 +9,7 @@ using System.Reflection;
 using System.Threading;
 using AIMP.DiskCover.CoverFinder;
 using AIMP.DiskCover.Interfaces;
-using AIMP.DiskCover.Settings;
 using AIMP.SDK.FileManager;
-using AIMP.SDK.Logger;
 using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.Infrastructure
@@ -110,7 +108,7 @@ namespace AIMP.DiskCover.Infrastructure
         /// Being in a separate thread, this method uses find rules one by one 
         /// and tries to load the cover image.
         /// </summary>
-        private Bitmap LoadImageWorkItem(Object initialRequestId, TrackInfo trackInfo)
+        private Bitmap LoadImageWorkItem(object initialRequestId, TrackInfo trackInfo)
         {
             Bitmap result = null;
 
@@ -138,7 +136,7 @@ namespace AIMP.DiskCover.Infrastructure
                         Contract.Assume(rule != null);
                         moduleName = rule.Module;
                     }
-                     //If it is a CDA or a radio station - only LastFm can help us.
+                    //If it is a CDA or a radio station - only LastFm can help us.
                     else
                     {
                         // If Last.Fm is disabled - stop iterating, we can't get the cover image.

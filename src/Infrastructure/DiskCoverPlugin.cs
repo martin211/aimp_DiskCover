@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
 using AIMP.SDK.AlbumArtManager;
-using AIMP.SDK.Logger;
 using AIMP.SDK.MenuManager;
 using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Options;
@@ -30,21 +29,6 @@ namespace AIMP.DiskCover.Infrastructure
 
     public class DiskCoverPlugin : IDiskCoverPlugin, IDisposable
     {
-        private class AimpMessageHook : IAimpMessageHook
-        {
-            private readonly Func<AimpMessages.AimpCoreMessageType, int, int, AimpActionResult> _coreMessage;
-
-            public AimpMessageHook(Func<AimpMessages.AimpCoreMessageType, int, int, AimpActionResult> coreMessage)
-            {
-                _coreMessage = coreMessage;
-            }
-
-            public AimpActionResult CoreMessage(AimpMessages.AimpCoreMessageType message, int param1, int param2)
-            {
-                return _coreMessage(message, param1, param2);
-            }
-        }
-
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int _controlfp(int newControl, int mask);
 
@@ -59,8 +43,8 @@ namespace AIMP.DiskCover.Infrastructure
         private bool _isChecked;
         private readonly ICoverFinderManager _coverFinderManager;
         private CoverWindow _coverWindow;
-        private bool _isInitialized;
-        private bool _isShowen;
+        private bool _isShown;
+        private AimpMessageHook _aimpMessageHook;
 
         public DiskCoverPlugin(
             IAimpPlayer player,
@@ -89,21 +73,22 @@ namespace AIMP.DiskCover.Infrastructure
             _controlfp(0x9001F, 0xfffff);
 
             var res = _player.Core.RegisterExtension(_dialogFrame);
-            if (res != AimpActionResult.Ok)
+            if (res != AimpActionResult.OK)
             {
                 _logger.Write($"Unable register IAimpOptionsDialogFrame: {res}");
             }
 
             res = _player.Core.RegisterExtension(_aimpExtensionAlbumArtCatalog);
-            if (res != AimpActionResult.Ok)
+            if (res != AimpActionResult.OK)
             {
                 _logger.Write($"Unable register IAimpExtensionAlbumArtCatalog: {res}");
             }
 
             InitMenu();
-            _player.ServiceMessageDispatcher.Hook(new AimpMessageHook(CoreOnCoreMessage));
-            _player.StateChanged += PlayerOnStateChanged;
-            _player.TrackChanged += PlayerOnTrackChanged;
+
+            _aimpMessageHook = new AimpMessageHook();
+            _aimpMessageHook.OnCoreMessage += CoreOnCoreMessage;
+            _player.ServiceMessageDispatcher.Hook(_aimpMessageHook);
             _pluginEvents.ConfigUpdated += (sender, args) => { };
 
             InitCoverWindow();
@@ -112,7 +97,7 @@ namespace AIMP.DiskCover.Infrastructure
         private void InitMenu()
         {
             var res = _player.MenuManager.CreateMenuItem(out _menuItem);
-            if (res == AimpActionResult.Ok)
+            if (res == AimpActionResult.OK)
             {
                 _menuItem.Checked = _settings.IsEnabled;
                 _menuItem.OnExecute += AimpMenu_Click;
@@ -132,7 +117,7 @@ namespace AIMP.DiskCover.Infrastructure
             _coverFinderManager.BeginRequest += OnBeginFindCoverRequest;
             _coverFinderManager.EndRequest += OnEndFindCoverRequest;
             // TODO: Extract to provider and use DI
-            _coverWindow = new CoverWindow(_settings, _pluginEventsExecutor, _player)
+            _coverWindow = new CoverWindow(_settings, _pluginEventsExecutor)
             {
                 MinHeight = 200,
                 MinWidth = 200,
@@ -169,7 +154,7 @@ namespace AIMP.DiskCover.Infrastructure
 
         private void ShowCoverForm()
         {
-            _isShowen = true;
+            _isShown = true;
             _coverWindow.Show();
             _coverWindow.Activate();
 
@@ -179,7 +164,7 @@ namespace AIMP.DiskCover.Infrastructure
 
         private void OnBeginFindCoverRequest(object s, EventArgs e)
         {
-            _coverWindow.Dispatcher.Invoke(new Action(_coverWindow.BeginLoadImage));
+            _coverWindow.Dispatcher.Invoke(_coverWindow.BeginLoadImage);
         }
 
         private void OnEndFindCoverRequest(UIntPtr aimpTaskId, Bitmap coverArt)
@@ -195,42 +180,34 @@ namespace AIMP.DiskCover.Infrastructure
 
         private void UpdateImage(Bitmap newImage)
         {
-            // ReSharper disable CoVariantArrayConversion
-            _coverWindow.Dispatcher.Invoke(new Action<Bitmap>(_coverWindow.ChangeCoverImage), new[] { newImage });
-            // ReSharper restore CoVariantArrayConversion
+            _coverWindow.Dispatcher.Invoke(new Action<Bitmap>(_coverWindow.ChangeCoverImage), newImage);
         }
-
-        private void PlayerOnTrackChanged(object sender, EventArgs eventArgs)
+        
+        private AimpActionResult CoreOnCoreMessage(AimpCoreMessageType message, int param1, int param2)
         {
-           // RequestFreshCoverImage();
-        }
-
-        private void PlayerOnStateChanged(object sender, StateChangedEventArgs stateChangedEventArgs)
-        {
-            if (stateChangedEventArgs.PlayerState == AimpPlayerState.Playing && _isShowen)
+            if (message == AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START ||
+                message == AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START_SUBTRACK)
             {
                 RequestFreshCoverImage();
             }
-            else if (stateChangedEventArgs.PlayerState == AimpPlayerState.Stopped && _isShowen)
+
+            if (message == AimpCoreMessageType.AIMP_MSG_CMD_STOP && _isShown)
             {
                 _coverWindow.ChangeCoverImage(null);
             }
-        }
 
-        private AimpActionResult CoreOnCoreMessage(AimpMessages.AimpCoreMessageType message, int param1, int param2)
-        {
-            if (message == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START || message == AimpMessages.AimpCoreMessageType.AIMP_MSG_EVENT_STREAM_START_SUBTRACK)
+            if (message == AimpCoreMessageType.AIMP_MSG_CMD_PLAY && _isShown)
             {
                 RequestFreshCoverImage();
             }
 
-            return AimpActionResult.Ok;
+            return AimpActionResult.OK;
         }
 
         private void RequestFreshCoverImage()
         {
             // This happens if cover window is currently not enabled.
-            if (!_isShowen)
+            if (!_isShown)
             {
                 return;
             }
@@ -238,10 +215,11 @@ namespace AIMP.DiskCover.Infrastructure
             if (_player.State == AimpPlayerState.Playing)
             {
                 UIntPtr taskId = UIntPtr.Zero;
+                var id = taskId;
                 _player.ServiceThreadPool.Execute(new AimpTask(() =>
                 {
-                    _coverFinderManager.FindCoverImageAsync(taskId);
-                    return AimpActionResult.Ok;
+                    _coverFinderManager.FindCoverImageAsync(id);
+                    return AimpActionResult.OK;
                 }), out taskId);
             }
             else
@@ -253,7 +231,7 @@ namespace AIMP.DiskCover.Infrastructure
         public void Dispose()
         {
             _coverWindow?.Close();
-            _player.Core.UnregisterExtension(_aimpExtensionAlbumArtCatalog);
+            //_player.MenuManager.Delete(_menuItem);
             _logger.Close();
         }
     }

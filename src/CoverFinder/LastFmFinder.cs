@@ -4,17 +4,17 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.Logger;
-using AIMP.SDK.Player;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
 using IF.Lastfm.Core.Objects;
-using Newtonsoft.Json;
 
 namespace AIMP.DiskCover.CoverFinder
 {
@@ -26,59 +26,49 @@ namespace AIMP.DiskCover.CoverFinder
         private const string ApiKey = "f5610848fef2dc0abd449e6268acb1d2";
         private const string SecretKey = "a5008c1485f6639a9c4edfc7cc773e03";
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LastFmFinder"/> class.
-        /// </summary>
-        public LastFmFinder()
-        {
-            _client = new LastfmClient(ApiKey, SecretKey);
-        }
-
         // TODO: Use DI
         private ILogger Logger => DependencyResolver.Current.ResolveService<ILogger>();
 
-        private readonly LastfmClient _client;
+        private LastfmClient _client;
 
-        /// <inheritdoc />
         public string Name => ModuleName;
 
-        /// <inheritdoc />
         public CoverRuleType RuleType => CoverRuleType.LastFM;
 
-        /// <inheritdoc />
-        public Bitmap GetBitmap(IAimpPlayer player)
+        public Bitmap GetBitmap(TrackInfo trackInfo)
         {
-            return GetBitmap(player, null);
+            return GetBitmap(trackInfo, null);
         }
 
-        /// <inheritdoc />
-        public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
+        public Bitmap GetBitmap(TrackInfo trackInfo, FindRule currentRule)
         {
-            return GetBitmapAsync(player, currentRule).Result;
+            return GetBitmapAsync(trackInfo, currentRule).Result;
         }
 
-        /// <inheritdoc />
-        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
+        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo)
         {
-            return GetBitmapAsync(player, null);
+            return GetBitmapAsync(trackInfo, null);
         }
 
-        /// <inheritdoc />
-        public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
+        public Task<Bitmap> GetBitmapAsync(TrackInfo trackInfo, FindRule currentRule)
         {
             try
             {
-                return GetTrackCoverAsync(player, currentRule);
+                return GetTrackCoverAsync(trackInfo, currentRule);
             }
             catch (Exception ex)
             {
-                Logger.Write(ex);
 #if DEBUG
                 MessageBox.Show(ex.ToString(), "LastFm Error", MessageBoxButton.OK, MessageBoxImage.Error);
 #endif
             }
 
             return null;
+        }
+
+        public LastFmFinder()
+        {
+            _client = new LastfmClient(ApiKey, SecretKey);
         }
 
         private Bitmap DownloadImage(Uri uri)
@@ -105,7 +95,7 @@ namespace AIMP.DiskCover.CoverFinder
             return bitmap;
         }
 
-        private static Stream GetImageStream(Uri url)
+        private Stream GetImageStream(Uri url)
         {
             Stream stream;
             if ((object)url == null)
@@ -114,38 +104,59 @@ namespace AIMP.DiskCover.CoverFinder
             }
             else
             {
-                WebRequest webRequest = WebRequest.CreateDefault(url);
-                webRequest.Method = "GET";
-                WebResponse response;
+                ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                       | SecurityProtocolType.Tls11
+                                                       | SecurityProtocolType.Tls12
+                                                       | SecurityProtocolType.Ssl3;
+
+                HttpClient client = new HttpClient();
+                var t = client.GetAsync(url);
+                t.Wait();
+                var response = t.Result;
+
                 try
                 {
-                    response = webRequest.GetResponse();
+                    response.EnsureSuccessStatusCode();
+                    var d = response.Content.ReadAsStreamAsync();
+                    d.Wait();
+                    stream = d.Result;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Logger.Write(e);
                     return null;
                 }
-
-                stream = response.GetResponseStream();
             }
+
             return stream;
+        }
+
+        public bool ValidateServerCertificate(
+            object sender,
+            X509Certificate certificate,
+            X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
         private async Task<LastTrack> GetTrackInfo(string artist, string track)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetTrackInfo)}]: artist {artist} track: {track}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetTrackInfo)}]: artist {artist} track {track}");
             return await GetData(() => _client.Track.GetInfoAsync(track, artist, string.Empty));
         }
 
         private async Task<LastAlbum> GetAlbumInfo(string artist, string album)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetAlbumInfo)}]: artist {artist} album: {album}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetAlbumInfo)}]: artist {artist} album {album}");
             return await GetData(() => _client.Album.GetInfoAsync(artist, album, true));
         }
 
         private async Task<LastArtist> GetArtistInfo(string artist)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetArtistInfo)}]: artist: {artist}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetArtistInfo)}]: artist {artist}");
             return await GetData(() => _client.Artist.GetInfoAsync(artist, "en", true));
         }
 
@@ -155,17 +166,15 @@ namespace AIMP.DiskCover.CoverFinder
             if (data.Status == LastResponseStatus.Successful)
             {
                 var content = data.Content;
-                Logger.Write($"Response [{ModuleName}]: {JsonConvert.SerializeObject(content)}");
+                Logger.Write($"Response [{ModuleName}]: {content}");
                 return content;
             }
 
-            return default(TData);
+            return default;
         }
 
-        private async Task<Bitmap> GetTrackCoverAsync(IAimpPlayer player, FindRule currentRule)
+        private async Task<Bitmap> GetTrackCoverAsync(TrackInfo trackInfo, FindRule currentRule)
         {
-            var trackInfo = new TrackInfo(player.CurrentFileInfo);
-
             var album = trackInfo.Album;
             var artist = trackInfo.Artist;
             var title = trackInfo.Title;
