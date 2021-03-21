@@ -30,9 +30,7 @@ namespace AIMP.DiskCover.Infrastructure
             container.RegisterType<IPluginSettings, ConfigProvider>();
             container.RegisterType<IConfigProvider, ConfigProvider>();
 
-            container.RegisterType<PluginEvents>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IPluginEvents, PluginEvents>();
-            container.RegisterType<IPluginEventsExecutor, PluginEvents>();
+            container.RegisterType<IEventAggregator, EventAggregator>(new ContainerControlledLifetimeManager());
 
             container.RegisterInstance(player, new ContainerControlledLifetimeManager());
             container.RegisterType<ILogger, FileLoggerManager>(new ContainerControlledLifetimeManager());

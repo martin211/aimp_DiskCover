@@ -21,7 +21,7 @@ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 $CorePath = "$SolutionDir\$ConfigurationName"
 $RootFolder = $(Get-Item $SolutionDir).Parent.Parent.FullName
-$OutputPath = "$RootFolder\AIMP\$AimpVersion\Plugins\$TargetName"
+$OutputPath = "$RootFolder\$AimpVersion\Plugins\$TargetName"
 $exclude = @('aimp_dotnet.dll','AIMP.SDK.dll')
 
 ###########################################################################

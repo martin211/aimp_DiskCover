@@ -82,6 +82,11 @@ namespace AIMP.DiskCover.Infrastructure
         public void FindCoverImageAsync(UIntPtr taskId)
         {
             Guid initialRequestId = _currentRequestId = Guid.NewGuid();
+            if (_aimpPlayer.CurrentFileInfo == null)
+            {
+                return;
+            }
+
             OnBeginRequest(this, null);
             var coverArt = LoadImageWorkItem(initialRequestId, new TrackInfo(_aimpPlayer.CurrentFileInfo));
             if (coverArt != null)

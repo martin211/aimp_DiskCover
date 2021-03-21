@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Management;
+using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Player;
+using Newtonsoft.Json;
 
 namespace AIMP.DiskCover.Infrastructure.Logger
 {
@@ -12,14 +14,16 @@ namespace AIMP.DiskCover.Infrastructure.Logger
         private readonly string _fileLog;
         private StreamWriter _logFileStream;
         private readonly IPluginSettings _pluginSettings;
+        private IAimpPlayer _player;
 
         public FileLoggerManager(
             IAimpPlayer aimpPlayer,
             IPluginSettings pluginSettings,
-            IPluginEvents pluginEvents)
+            IEventAggregator aggregator)
         {
             _pluginSettings = pluginSettings;
-            pluginEvents.SaveConfig += PluginEvents_SaveConfig;
+            aggregator.Register<SaveConfigEventArgs>(PluginEvents_SaveConfig);
+            _player = aimpPlayer;
 
             var dir = aimpPlayer.Core.GetPath(AimpCorePathType.Profile);
             _fileLog = Path.Combine(dir, "diskcover.log");
@@ -30,11 +34,19 @@ namespace AIMP.DiskCover.Infrastructure.Logger
             }
         }
 
-        private void PluginEvents_SaveConfig(object sender, EventArgs e)
+        private void PluginEvents_SaveConfig(SaveConfigEventArgs e)
         {
             if (_pluginSettings.DebugMode && _logFileStream == null)
             {
                 Init();
+            }
+        }
+
+        public void Write(string operation, string module, object obj)
+        {
+            if (_pluginSettings.DebugMode)
+            {
+                Write($"{operation} [{module}]: {JsonConvert.SerializeObject(obj)}");
             }
         }
 
@@ -90,6 +102,9 @@ namespace AIMP.DiskCover.Infrastructure.Logger
                         _logFileStream.WriteLine($"Operating System Service Pack: {managementObject["CSDVersion"]}");
                     }
                 }
+
+                _logFileStream.WriteLine($"AIMP version: {_player.ServiceVersionInfo.FormatInfo}");
+                _logFileStream.WriteLine($"Plugin version: {typeof(FileLoggerManager).Assembly.GetName().Version}");
 
                 _logFileStream.WriteLine(Environment.NewLine);
                 _logFileStream.Flush();
