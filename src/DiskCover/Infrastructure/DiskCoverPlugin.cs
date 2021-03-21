@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
 using AIMP.SDK.AlbumArtManager;
@@ -36,9 +37,8 @@ namespace AIMP.DiskCover.Infrastructure
         private readonly ILogger _logger;
         private readonly IPluginSettings _settings;
         private readonly IAimpOptionsDialogFrame _dialogFrame;
-        private readonly IPluginEventsExecutor _pluginEventsExecutor;
-        private readonly IPluginEvents _pluginEvents;
         private readonly IAimpExtensionAlbumArtCatalog _aimpExtensionAlbumArtCatalog;
+        private readonly IEventAggregator _eventAggregator;
         private IAimpMenuItem _menuItem;
         private bool _isChecked;
         private readonly ICoverFinderManager _coverFinderManager;
@@ -50,20 +50,19 @@ namespace AIMP.DiskCover.Infrastructure
             IAimpPlayer player,
             IPluginSettings settings,
             ILogger logger,
-            IPluginEventsExecutor pluginEventsExecutor,
             IAimpExtensionAlbumArtCatalog aimpExtensionAlbumArtCatalog,
-            IPluginEvents pluginEvents,
             ICoverFinderManager coverFinderManager,
-            IAimpOptionsDialogFrame dialogFrame)
+            IAimpOptionsDialogFrame dialogFrame,
+            IEventAggregator eventAggregator
+            )
         {
             _player = player;
             _logger = logger;
             _settings = settings;
             _dialogFrame = dialogFrame;
-            _pluginEventsExecutor = pluginEventsExecutor;
-            _pluginEvents = pluginEvents;
             _coverFinderManager = coverFinderManager;
             _aimpExtensionAlbumArtCatalog = aimpExtensionAlbumArtCatalog;
+            _eventAggregator = eventAggregator;
         }
 
         public void Initialize()
@@ -89,7 +88,6 @@ namespace AIMP.DiskCover.Infrastructure
             _aimpMessageHook = new AimpMessageHook();
             _aimpMessageHook.OnCoreMessage += CoreOnCoreMessage;
             _player.ServiceMessageDispatcher.Hook(_aimpMessageHook);
-            _pluginEvents.ConfigUpdated += (sender, args) => { };
 
             InitCoverWindow();
         }
@@ -119,7 +117,7 @@ namespace AIMP.DiskCover.Infrastructure
             _coverFinderManager.BeginRequest += OnBeginFindCoverRequest;
             _coverFinderManager.EndRequest += OnEndFindCoverRequest;
             // TODO: Extract to provider and use DI
-            _coverWindow = new CoverWindow(_settings, _pluginEventsExecutor, _player)
+            _coverWindow = new CoverWindow(_settings, _player, _eventAggregator)
             {
                 MinHeight = 200,
                 MinWidth = 200,
@@ -160,7 +158,7 @@ namespace AIMP.DiskCover.Infrastructure
             _coverWindow.Show();
             _coverWindow.Activate();
 
-            RequestFreshCoverImage();
+            RequestFreshCoverImage(null);
             _coverWindow.Display();
         }
 
@@ -190,7 +188,7 @@ namespace AIMP.DiskCover.Infrastructure
             if (message == AimpCoreMessageType.EventStreamStart ||
                 message == AimpCoreMessageType.EventStreamStartSubtrack)
             {
-                RequestFreshCoverImage();
+                RequestFreshCoverImage(message);
             }
 
             if (message == AimpCoreMessageType.CmdStop && _isShown)
@@ -200,13 +198,15 @@ namespace AIMP.DiskCover.Infrastructure
 
             if (message == AimpCoreMessageType.CmdPlay && _isShown)
             {
-                RequestFreshCoverImage();
+                RequestFreshCoverImage(message);
             }
+
+            _eventAggregator.Raise(new CoreMessageEventArgs(message, param1, param2));
 
             return new AimpActionResult(ActionResultType.OK);
         }
 
-        private void RequestFreshCoverImage()
+        private void RequestFreshCoverImage(AimpCoreMessageType? message)
         {
             // This happens if cover window is currently not enabled.
             if (!_isShown)
@@ -214,7 +214,7 @@ namespace AIMP.DiskCover.Infrastructure
                 return;
             }
 
-            if (_player.State == AimpPlayerState.Playing)
+            if (_player.State == AimpPlayerState.Playing || (message.HasValue && message == AimpCoreMessageType.CmdPlay))
             {
                 UIntPtr taskId = UIntPtr.Zero;
                 var id = taskId;
@@ -235,7 +235,7 @@ namespace AIMP.DiskCover.Infrastructure
         public void Dispose()
         {
             _coverWindow?.Close();
-            //_player.MenuManager.Delete(_menuItem);
+            _player.ServiceMenuManager.Delete(_menuItem);
             _logger.Close();
         }
     }

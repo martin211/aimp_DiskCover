@@ -164,9 +164,14 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoverFinder\EventActionContext.cs" />
     <Compile Include="Infrastructure\AimpMessageHook.cs" />
     <Compile Include="Infrastructure\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs" />
     <Compile Include="Infrastructure\DiskCoverPlugin.cs" />
+    <Compile Include="Infrastructure\EventAggregator.cs" />
+    <Compile Include="Infrastructure\Events\ConfigUpdatedEventArgs.cs" />
+    <Compile Include="Infrastructure\Events\CoreMessageEventArgs.cs" />
+    <Compile Include="Infrastructure\Events\SaveConfigEventArgs.cs" />
     <Compile Include="Infrastructure\FinderEvents.cs" />
     <Compile Include="Infrastructure\CoverFinderManager.cs" />
     <Compile Include="Infrastructure\Algorithms.cs" />
@@ -176,7 +181,6 @@
     <Compile Include="Interfaces\ICoverFinderManager.cs" />
     <Compile Include="Interfaces\IDiskCoverPlugin.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
-    <Compile Include="Interfaces\IPluginEvents.cs" />
     <Compile Include="Interfaces\IViewModelsProvider.cs" />
     <Compile Include="Infrastructure\UnityConfig.cs" />
     <Compile Include="Infrastructure\UnityDependencyResolver.cs" />

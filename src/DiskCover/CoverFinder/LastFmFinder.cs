@@ -149,29 +149,30 @@ namespace AIMP.DiskCover.CoverFinder
 
         private async Task<LastTrack> GetTrackInfo(string artist, string track)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetTrackInfo)}]: artist {artist} track {track}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetTrackInfo)}]: artist - {artist}, track - {track}");
             return await GetData(() => _client.Track.GetInfoAsync(track, artist, string.Empty));
         }
 
         private async Task<LastAlbum> GetAlbumInfo(string artist, string album)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetAlbumInfo)}]: artist {artist} album {album}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetAlbumInfo)}]: artist - {artist}, album - {album}");
             return await GetData(() => _client.Album.GetInfoAsync(artist, album, true));
         }
 
         private async Task<LastArtist> GetArtistInfo(string artist)
         {
-            Logger.Write($"Request [{ModuleName}-{nameof(GetArtistInfo)}]: artist {artist}");
+            Logger.Write($"Request [{ModuleName}-{nameof(GetArtistInfo)}]: artist - {artist}");
             return await GetData(() => _client.Artist.GetInfoAsync(artist, "en", true));
         }
 
         private async Task<TData> GetData<TData>(Func<Task<LastResponse<TData>>> action)
         {
             LastResponse<TData> data = await action();
+            Logger.Write($"Response [{ModuleName}]: {data.Status}");
             if (data.Status == LastResponseStatus.Successful)
             {
                 var content = data.Content;
-                Logger.Write($"Response [{ModuleName}]: {content}");
+                Logger.Write("Response", ModuleName, content);
                 return content;
             }
 

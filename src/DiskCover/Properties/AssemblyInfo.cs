@@ -37,6 +37,6 @@ using System.Runtime.InteropServices;
     // app, or any theme specific resource dictionaries)
 )]*/
 
-[assembly: AssemblyVersion("2.0.0.40")]
-[assembly: AssemblyInformationalVersion("2.0.0-nuke-integration.40+Branch.nuke_integration.Sha.ce368d0cefc401f81d62d9233ed01f71edfe553f")]
-[assembly: AssemblyFileVersion("2.0.0.40")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("InfVer")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

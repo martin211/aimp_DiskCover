@@ -5,18 +5,18 @@ namespace AIMP.DiskCover.Infrastructure
 {
     public class ViewModelsProvider : IViewModelsProvider
     {
-        private readonly IPluginEventsExecutor _eventsExecutor;
+        private readonly IEventAggregator _aggregator;
         private readonly IPluginSettings _settings;
 
-        public ViewModelsProvider(IPluginEventsExecutor eventsExecutor, IPluginSettings settings)
+        public ViewModelsProvider(IPluginSettings settings, IEventAggregator aggregator)
         {
-            _eventsExecutor = eventsExecutor;
             _settings = settings;
+            _aggregator = aggregator;
         }
 
         public SettingsViewModel GetSettingsViewModel()
         {
-            return new SettingsViewModel(_eventsExecutor, _settings);
+            return new SettingsViewModel(_settings, _aggregator);
         }
     }
 }

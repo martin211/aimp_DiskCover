@@ -1,9 +1,12 @@
-﻿using AIMP.DiskCover.CoverFinder;
+﻿using System.Runtime.InteropServices;
+using System.Windows.Interop;
+using AIMP.DiskCover.CoverFinder;
 using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
+using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Player;
-using AIMP.SDK.TagEditor;
 
 namespace AIMP.DiskCover
 {
@@ -25,8 +28,8 @@ namespace AIMP.DiskCover
     public partial class CoverWindow
     {
         private Bitmap _coverImage;
-        private IPluginSettings _settings;
-        private IPluginEventsExecutor _pluginEventsExecutor;
+        private readonly IPluginSettings _settings;
+        private readonly IEventAggregator _aggregator;
         private readonly IAimpPlayer _player;
 
         /// <summary>
@@ -40,11 +43,11 @@ namespace AIMP.DiskCover
             }
         }
 
-        public CoverWindow(IPluginSettings settings, IPluginEventsExecutor pluginEventsExecutor, IAimpPlayer player)
+        public CoverWindow(IPluginSettings settings, IAimpPlayer player, IEventAggregator aggregator)
         {
             _settings = settings;
-            _pluginEventsExecutor = pluginEventsExecutor;
             _player = player;
+            _aggregator = aggregator;
             Init();
         }
 
@@ -98,11 +101,6 @@ namespace AIMP.DiskCover
             coverImage.Source = bi;
             ResizeImage();
             EndLoadImage();
-        }
-
-        public void Show(IntPtr parent)
-        {
-
         }
 
         private void ResizeImage()
@@ -185,7 +183,7 @@ namespace AIMP.DiskCover
             _settings.Left = Left;
             _settings.Top = Top;
 
-            _pluginEventsExecutor.OnSaveConfig();
+            _aggregator.Raise(new SaveConfigEventArgs());
         }
 
         private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)

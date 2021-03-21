@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 
 namespace AIMP.DiskCover
@@ -26,18 +27,18 @@ namespace AIMP.DiskCover
         private readonly string SettingDebug = $"{SectionName}\\DebugMode";
 
         private readonly IAimpPlayer _player;
-        private readonly IPluginEvents _pluginEvents;
+        private readonly IEventAggregator _aggregator;
 
         /// <summary>
         /// A read-only collection of all available cover finding rules.
         /// </summary>
         private static readonly ReadOnlyCollection<FindRule> _rules = new ReadOnlyCollection<FindRule>(FindRule.GetAvailableRules());
 
-        public ConfigProvider(IAimpPlayer player, IPluginEvents pluginEvents)
+        public ConfigProvider(IAimpPlayer player, IEventAggregator aggregator)
         {
             _player = player;
-            _pluginEvents = pluginEvents;
-            _pluginEvents.SaveConfig += (sender, args) => { StoreChanges(); };
+            _aggregator = aggregator;
+            _aggregator.Register<SaveConfigEventArgs>(StoreChanges);
             LoadSettings();
         }
 
@@ -157,6 +158,11 @@ namespace AIMP.DiskCover
             _player.ServiceConfig.SetValueAsInt32(SettingDebug, DebugMode ? 1 : 0);
             _player.ServiceConfig.SetValueAsString(SettingRules, string.Join(";", AppliedRules.Select(c => c.Rule.ToString())));
             _player.ServiceConfig.FlushCache();
+        }
+
+        private void StoreChanges(SaveConfigEventArgs e)
+        {
+            StoreChanges();
         }
     }
 }

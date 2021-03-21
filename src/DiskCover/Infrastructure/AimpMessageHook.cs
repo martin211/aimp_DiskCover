@@ -1,4 +1,5 @@
-﻿using AIMP.SDK;
+﻿using System;
+using AIMP.SDK;
 using AIMP.SDK.MessageDispatcher;
 
 namespace AIMP.DiskCover.Infrastructure

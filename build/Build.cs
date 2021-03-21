@@ -31,8 +31,8 @@ class Build : NukeBuild
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Solution] readonly Solution Solution;
-    //[GitRepository] readonly GitRepository GitRepository;
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitRepository] readonly GitRepository GitRepository;
+    [GitVersion(NoFetch = true)] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath OutputDirectory => RootDirectory / "output";
@@ -58,12 +58,32 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
+            var version = GitVersion.AssemblySemVer;
+            //if (GitRepository.Branch != null && GitRepository.Branch.StartsWith("release"))
+            //{
+            //    version = GitRepository.Branch.Split('/')[1];
+            //}
+
+            var assemblyInfo = GlobFiles(SourceDirectory, "**/AssemblyInfo.cs");
+            if (assemblyInfo.Count > 0)
+            {
+                foreach (var file in assemblyInfo)
+                {
+                    Logger.Info($"Update version at '{file}'");
+                    var fileContent = File.ReadAllText(file);
+                    fileContent = fileContent
+                        .Replace("1.0.0.0", version)
+                        .Replace("InfVer", GitVersion.InformationalVersion);
+                    File.WriteAllText(file, fileContent);
+                }
+            }
+
             MSBuild(_ => _
                 .SetTargetPath(Solution)
                 .SetTargets("Rebuild")
                 .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.AssemblySemVer)
-                .SetFileVersion(GitVersion.AssemblySemFileVer)
+                .SetAssemblyVersion(version)
+                .SetFileVersion(version)
                 .SetInformationalVersion(GitVersion.InformationalVersion)
                 .SetMaxCpuCount(Environment.ProcessorCount)
                 .SetNodeReuse(IsLocalBuild));
@@ -72,7 +92,7 @@ class Build : NukeBuild
     Target Artifacts => _ => _
         .Executes(() =>
         {
-            var outputDir = OutputDirectory / "DiskCover" / "DiskCover";
+            var outputDir = OutputDirectory / "DiskCover" / "Aimp_DiskCover";
             EnsureCleanDirectory(OutputDirectory);
             Directory.CreateDirectory(outputDir);
             Logger.Info("Copy SDK files to artifacts folder");
@@ -102,12 +122,31 @@ class Build : NukeBuild
 
                 if (f.Name.StartsWith("aimp_dotnet"))
                 {
-                    outFile = outputDir / "DiskCover.dll";
+                    outFile = outputDir / "Aimp_DiskCover.dll";
                 }
 
                 Logger.Info($"Copy '{f.Name}' to '{outFile}'");
 
                 f.CopyTo(outFile, true);
+            }
+
+            var lang = GlobDirectories(SourceDirectory, "**/langs");
+            if (lang.Count > 0)
+            {
+                if (!Directory.Exists(outputDir / "langs"))
+                {
+                    Directory.CreateDirectory(outputDir / "langs");
+                }
+
+                files = GlobFiles(lang.First(), "*.lng");
+
+                foreach (var file in files)
+                {
+                    var fi = new FileInfo(file);
+                    var outFile = outputDir / "langs" / fi.Name;
+                    Logger.Info($"Copy '{fi.Name}' to '{outFile}'");
+                    File.Copy(file, outFile);
+                }
             }
 
             Logger.Info("Compress artifacts");

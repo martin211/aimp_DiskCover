@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using AIMP.DiskCover.Annotations;
 using AIMP.DiskCover.Infrastructure;
+using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 
 namespace AIMP.DiskCover.Settings
@@ -22,16 +23,16 @@ namespace AIMP.DiskCover.Settings
         private double _left;
         private double _top;
         private CoverRuleType[] _rules;
-        private IPluginEventsExecutor _pluginEventsExecutor;
+        private readonly IEventAggregator _aggregator;
         private IPluginSettings _pluginSettings;
 
         private ObservableCollection<FindRule> _appliedRules;
         private ObservableCollection<FindRule> _availableRules;
 
-        public SettingsViewModel(IPluginEventsExecutor executor, IPluginSettings settings)
+        public SettingsViewModel(IPluginSettings settings, IEventAggregator aggregator)
         {
             _pluginSettings = settings;
-            _pluginEventsExecutor = executor;
+            _aggregator = aggregator;
             AppliedRules = new ObservableCollection<FindRule>(settings.AppliedRules);
             AvailableRules = new ObservableCollection<FindRule>(settings.Rules.Where(r => !r.Enabled));
         }
@@ -231,7 +232,7 @@ namespace AIMP.DiskCover.Settings
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             // TODO find best way how to update it
             _pluginSettings.AppliedRules = new List<FindRule>(AppliedRules);
-            _pluginEventsExecutor.OnConfigUpdated();
+            _aggregator.Raise(new ConfigUpdatedEventArgs());
         }
 
         private void AddRule()
