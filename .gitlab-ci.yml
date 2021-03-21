@@ -1,0 +1,34 @@
+stages:
+  - build
+
+variables:
+  build_path: "$CI_PROJECT_DIR/src/"
+  output_path: "$CI_PROJECT_DIR/output/"
+
+cache:
+   key: ${CI_COMMIT_REF_SLUG}
+   paths:
+     - src/packages/
+     - .tmp/
+
+before_script:
+  - cd $build_path
+
+build:
+  stage: build
+  script:
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Compile --Configuation $Configuration
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - src/**/bin/$Configuration/
+
+artifacts:
+  stage: build
+  variables:
+    GIT_STRATEGY: "none"
+  script:
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Artifacts --Configuation $Configuration
+  artifacts:
+    paths:
+      - output/
