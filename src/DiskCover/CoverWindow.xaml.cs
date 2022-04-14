@@ -409,7 +409,7 @@ namespace AIMP.DiskCover
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var currentFile = _player.CurrentFileInfo;
+            var currentFile = _player.ServicePlayer.CurrentFileInfo;
             var fi = new TrackInfo(currentFile);
             if (!string.IsNullOrWhiteSpace(fi.FileName) && !fi.IsStream)
             {

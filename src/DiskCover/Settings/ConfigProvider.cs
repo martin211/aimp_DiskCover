@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
 
 namespace AIMP.DiskCover
 {

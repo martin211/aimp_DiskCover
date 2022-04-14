@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.AlbumArtManager;
-using AIMP.SDK.Player;
+using AIMP.SDK;
+using AIMP.SDK.AlbumArt;
 
 namespace AIMP.DiskCover.CoverFinder
 {
@@ -64,7 +64,7 @@ namespace AIMP.DiskCover.CoverFinder
                     _resetEvent.Set();
                 };
 
-            player.ServiceAlbumArt.Get2(player.CurrentFileInfo, AimpFindCovertArtType.None, null);
+            player.ServiceAlbumArt.Get2(player.ServicePlayer.CurrentFileInfo, AimpFindCovertArtType.None, null);
             _resetEvent.WaitOne(new TimeSpan(0, 0, 0, 20));
            
             return Result;

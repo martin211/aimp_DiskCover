@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using AIMP.DiskCover.Infrastructure;
-using AIMP.SDK.FileManager;
+using AIMP.SDK.FileManager.Objects;
 
 namespace AIMP.DiskCover.Interfaces
 {

@@ -1,4 +1,4 @@
-﻿using AIMP.SDK.FileManager;
+﻿using AIMP.SDK.FileManager.Objects;
 
 namespace AIMP.DiskCover.CoverFinder
 {

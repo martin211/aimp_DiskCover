@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
 using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover.CoverFinder
@@ -23,12 +24,12 @@ namespace AIMP.DiskCover.CoverFinder
         public CoverRuleType RuleType => CoverRuleType.CoverFile;
         public Bitmap GetBitmap(IAimpPlayer player)
         {
-            return GetCoverArt(new TrackInfo(player.CurrentFileInfo), null);
+            return GetCoverArt(new TrackInfo(player.ServicePlayer.CurrentFileInfo), null);
         }
 
         public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
         {
-            return GetCoverArt(new TrackInfo(player.CurrentFileInfo), currentRule);
+            return GetCoverArt(new TrackInfo(player.ServicePlayer.CurrentFileInfo), currentRule);
         }
 
         public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)

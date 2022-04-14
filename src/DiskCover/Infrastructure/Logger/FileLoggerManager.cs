@@ -3,6 +3,7 @@ using System.IO;
 using System.Management;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
 using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Player;
 using Newtonsoft.Json;
@@ -16,10 +17,7 @@ namespace AIMP.DiskCover.Infrastructure.Logger
         private readonly IPluginSettings _pluginSettings;
         private IAimpPlayer _player;
 
-        public FileLoggerManager(
-            IAimpPlayer aimpPlayer,
-            IPluginSettings pluginSettings,
-            IEventAggregator aggregator)
+        public FileLoggerManager(IAimpPlayer aimpPlayer, IPluginSettings pluginSettings, IEventAggregator aggregator)
         {
             _pluginSettings = pluginSettings;
             aggregator.Register<SaveConfigEventArgs>(PluginEvents_SaveConfig);

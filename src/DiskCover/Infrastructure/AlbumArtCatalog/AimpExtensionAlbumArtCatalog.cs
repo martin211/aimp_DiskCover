@@ -2,9 +2,8 @@
 using System.Drawing;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
-using AIMP.SDK.AlbumArtManager;
-using AIMP.SDK.FileManager;
-using AIMP.SDK.Player;
+using AIMP.SDK.AlbumArt.Extensions;
+using AIMP.SDK.FileManager.Objects;
 
 namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
 {
