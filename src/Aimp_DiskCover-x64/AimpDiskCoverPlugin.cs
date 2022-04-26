@@ -1,16 +1,12 @@
 ﻿using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK;
 
 namespace AIMP.DiskCover
 {
-    [AimpPlugin(PluginName, "Evgeniy Bogdan, Roman Nikitin", Version)]
-// ReSharper disable ClassNeverInstantiated.Global
+    [AimpPlugin(PluginName, "Evgeniy Bogdan, Roman Nikitin", AdditionalInfo.Version)]
     public class AimpDiskCoverPlugin : AimpPlugin
-// ReSharper restore ClassNeverInstantiated.Global
     {
-        public const string PluginName = "AIMP Disc Cover";
-        public const string Version = "2.0.0";
+        public const string PluginName = $"AIMP Disc Cover v.{AdditionalInfo.Version}";
 
         private IDiskCoverPlugin _plugin;
 

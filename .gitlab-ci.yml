@@ -1,5 +1,7 @@
 stages:
-  - build
+  - build-x86
+  - build-x64
+  - artifacts
 
 variables:
   build_path: "$CI_PROJECT_DIR/src/"
@@ -8,27 +10,53 @@ variables:
 cache:
    key: ${CI_COMMIT_REF_SLUG}
    paths:
-     - src/packages/
      - .tmp/
 
 before_script:
   - cd $build_path
 
-build:
-  stage: build
+build-x86:
+  stage: build-x86
   script:
-    - powershell -File $CI_PROJECT_DIR\build.ps1 Compile --Configuation $Configuration
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - src/**/bin/$Configuration/
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Compile --Configuation $Configuration --TargetPlatform x86
 
-artifacts:
-  stage: build
+artifacts-x86:
+  stage: build-x86
   variables:
     GIT_STRATEGY: "none"
   script:
-    - powershell -File $CI_PROJECT_DIR\build.ps1 Artifacts --Configuation $Configuration
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Artifacts --TargetPlatform x86
+  cache:
+    key: "${CI_COMMIT_SHORT_SHA}-x86"
+    paths:
+      - output/*.zip
+
+build-x64:
+  stage: build-x64
+  script:
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Compile --Configuation $Configuration --TargetPlatform x64
+
+artifacts-x64:
+  stage: build-x64
+  variables:
+    GIT_STRATEGY: "none"
+  script:
+    - powershell -File $CI_PROJECT_DIR\build.ps1 Artifacts --TargetPlatform x64
+  cache:
+    key: "${CI_COMMIT_SHORT_SHA}-x64"
+    paths:
+      - output/*.zip
+
+artifacts:
+  stage: artifacts
+  script: echo "Publish artifacts"
+  cache:
+    - key: "${CI_COMMIT_SHORT_SHA}-x86"
+      paths:
+        - output/*.zip
+    - key: "${CI_COMMIT_SHORT_SHA}-x64"
+      paths:
+        - output/*.zip
   artifacts:
     paths:
-      - output/
+      - output/*
