@@ -3,9 +3,8 @@ using System.IO;
 using System.Management;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
 using AIMP.SDK.MessageDispatcher;
-using AIMP.SDK.Player;
-using Newtonsoft.Json;
 
 namespace AIMP.DiskCover.Infrastructure.Logger
 {
@@ -16,10 +15,7 @@ namespace AIMP.DiskCover.Infrastructure.Logger
         private readonly IPluginSettings _pluginSettings;
         private IAimpPlayer _player;
 
-        public FileLoggerManager(
-            IAimpPlayer aimpPlayer,
-            IPluginSettings pluginSettings,
-            IEventAggregator aggregator)
+        public FileLoggerManager(IAimpPlayer aimpPlayer, IPluginSettings pluginSettings, IEventAggregator aggregator)
         {
             _pluginSettings = pluginSettings;
             aggregator.Register<SaveConfigEventArgs>(PluginEvents_SaveConfig);
@@ -46,7 +42,7 @@ namespace AIMP.DiskCover.Infrastructure.Logger
         {
             if (_pluginSettings.DebugMode)
             {
-                Write($"{operation} [{module}]: {JsonConvert.SerializeObject(obj)}");
+                //Write($"{operation} [{module}]: {JsonConvert.SerializeObject(obj)}");
             }
         }
 
@@ -79,36 +75,6 @@ namespace AIMP.DiskCover.Infrastructure.Logger
 
         private void Init()
         {
-            var writeOsInfo = !File.Exists(_fileLog);
-            _logFileStream = File.AppendText(_fileLog);
-
-            if (writeOsInfo)
-            {
-                var mos = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
-                foreach (var managementObject in mos.Get())
-                {
-                    if (managementObject["Caption"] != null)
-                    {
-                        _logFileStream.WriteLine($"Operating System Name: {managementObject["Caption"]}");
-                    }
-
-                    if (managementObject["OSArchitecture"] != null)
-                    {
-                        _logFileStream.WriteLine($"Operating System Architecture: {managementObject["OSArchitecture"]}");
-                    }
-
-                    if (managementObject["CSDVersion"] != null)
-                    {
-                        _logFileStream.WriteLine($"Operating System Service Pack: {managementObject["CSDVersion"]}");
-                    }
-                }
-
-                _logFileStream.WriteLine($"AIMP version: {_player.ServiceVersionInfo.FormatInfo}");
-                _logFileStream.WriteLine($"Plugin version: {typeof(FileLoggerManager).Assembly.GetName().Version}");
-
-                _logFileStream.WriteLine(Environment.NewLine);
-                _logFileStream.Flush();
-            }
         }
     }
 }

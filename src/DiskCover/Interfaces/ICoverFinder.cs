@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
 using AIMP.DiskCover.Infrastructure;
-using AIMP.SDK.Player;
+using AIMP.SDK;
 
 namespace AIMP.DiskCover.Interfaces
 {

@@ -7,17 +7,16 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using AIMP.DiskCover.Annotations;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
+using JetBrains.Annotations;
 
 namespace AIMP.DiskCover.Settings
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
         private bool _isEnabled;
-        private bool _enableHotKeys;
         private double _height;
         private double _width;
         private double _left;

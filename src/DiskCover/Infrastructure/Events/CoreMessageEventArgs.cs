@@ -20,9 +20,9 @@ namespace AIMP.DiskCover.Infrastructure.Events
 
         public int Param1 { get; }
 
-        public int Param2 { get; }
+        public IntPtr Param2 { get; }
 
-        public CoreMessageEventArgs(AimpCoreMessageType messageType, int param1, int param2)
+        public CoreMessageEventArgs(AimpCoreMessageType messageType, int param1, IntPtr param2)
         {
             MessageType = messageType;
             Param1 = param1;

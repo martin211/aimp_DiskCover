@@ -1,10 +1,9 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
-using AIMP.SDK.AlbumArtManager;
-using AIMP.SDK.FileManager;
-using AIMP.SDK.Player;
+using AIMP.SDK.AlbumArt.Extensions;
+using AIMP.SDK.FileManager.Objects;
+using Aimp_DiskCover.Properties;
 
 namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
 {
@@ -39,7 +38,7 @@ namespace AIMP.DiskCover.Infrastructure.AlbumArtCatalog
 
         AimpActionResult<Bitmap> IAimpExtensionAlbumArtCatalog.GetIcon()
         {
-            return new AimpActionResult<Bitmap>(ActionResultType.OK, Properties.Resources.diskcover);
+            return new AimpActionResult<Bitmap>(ActionResultType.OK, Resources.diskcover);
         }
 
         public AimpActionResult<Bitmap> Show(IAimpFileInfo fileInfo)

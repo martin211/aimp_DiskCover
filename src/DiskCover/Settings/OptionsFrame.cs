@@ -2,6 +2,7 @@
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
+using AIMP.SDK;
 using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 

@@ -160,6 +160,8 @@
                     <StackPanel>
                         <GroupBox Header="{diskCover:Localizer Key='DiskCover.Options.Authors'}" Margin="5">
                             <StackPanel>
+                                <TextBlock  Padding="0 2">Version: 2.0.3</TextBlock>
+                                <TextBlock  Padding="0 2">Authors:</TextBlock>
                                 <TextBlock Padding="0 2">Evgeniy Bogdan <Hyperlink>https://github.com/martin211</Hyperlink></TextBlock>
                                 <TextBlock Padding="0 2">Roman Nikitin</TextBlock>
                             </StackPanel>

@@ -9,8 +9,8 @@ using System.Reflection;
 using System.Threading;
 using AIMP.DiskCover.CoverFinder;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.FileManager;
-using AIMP.SDK.Player;
+using AIMP.SDK;
+using AIMP.SDK.FileManager.Objects;
 
 namespace AIMP.DiskCover.Infrastructure
 {
@@ -82,13 +82,13 @@ namespace AIMP.DiskCover.Infrastructure
         public void FindCoverImageAsync(UIntPtr taskId)
         {
             Guid initialRequestId = _currentRequestId = Guid.NewGuid();
-            if (_aimpPlayer.CurrentFileInfo == null)
+            if (_aimpPlayer.ServicePlayer.CurrentFileInfo == null)
             {
                 return;
             }
 
             OnBeginRequest(this, null);
-            var coverArt = LoadImageWorkItem(initialRequestId, new TrackInfo(_aimpPlayer.CurrentFileInfo));
+            var coverArt = LoadImageWorkItem(initialRequestId, new TrackInfo(_aimpPlayer.ServicePlayer.CurrentFileInfo));
             if (coverArt != null)
             {
                 if (initialRequestId == _currentRequestId)

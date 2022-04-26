@@ -1,12 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Interop;
-using AIMP.DiskCover.CoverFinder;
+﻿using AIMP.DiskCover.CoverFinder;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
-using AIMP.SDK.MessageDispatcher;
-using AIMP.SDK.Player;
 
 namespace AIMP.DiskCover
 {
@@ -20,8 +16,6 @@ namespace AIMP.DiskCover
     using System.Windows.Media.Imaging;
     using System.Diagnostics;
 
-    using Resources;
-
     /// <summary>
     /// Interaction logic for CoverWindow.xaml
     /// </summary>
@@ -31,17 +25,6 @@ namespace AIMP.DiskCover
         private readonly IPluginSettings _settings;
         private readonly IEventAggregator _aggregator;
         private readonly IAimpPlayer _player;
-
-        /// <summary>
-        /// The WPF image element that shows AIMP's bitmap.
-        /// </summary>
-        public System.Windows.Controls.Image ImageElement
-        {
-            get
-            {
-                return coverImage;
-            }
-        }
 
         public CoverWindow(IPluginSettings settings, IAimpPlayer player, IEventAggregator aggregator)
         {
@@ -60,14 +43,14 @@ namespace AIMP.DiskCover
                 ShowInTaskbar = _settings.ShowInTaskbar;
 
                 // Set maximum allowed sizes of the window.
-                MaxWidth = System.Windows.SystemParameters.WorkArea.Width;
-                MaxHeight = System.Windows.SystemParameters.WorkArea.Height;
+                MaxWidth = SystemParameters.WorkArea.Width;
+                MaxHeight = SystemParameters.WorkArea.Height;
 
                 if (MaxWidth <= MaxHeight)
                 {
                     MessageBox.Show(
-                        LocalizedData.UnusualProportionsMessage,
-                        LocalizedData.PluginName,
+                        Localization.DiskCover.UnusualProportionsMessage,
+                        Localization.DiskCover.PluginName,
                         MessageBoxButton.OK,
                         MessageBoxImage.Exclamation);
                 }
@@ -86,7 +69,7 @@ namespace AIMP.DiskCover
         {
             if (image == null)
             {
-                image = LocalizedData.NoCoverImage;
+                image = Aimp_DiskCover.Properties.Resources.NoCover;
             }
 
             _coverImage = image;
@@ -409,7 +392,7 @@ namespace AIMP.DiskCover
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var currentFile = _player.CurrentFileInfo;
+            var currentFile = _player.ServicePlayer.CurrentFileInfo;
             var fi = new TrackInfo(currentFile);
             if (!string.IsNullOrWhiteSpace(fi.FileName) && !fi.IsStream)
             {

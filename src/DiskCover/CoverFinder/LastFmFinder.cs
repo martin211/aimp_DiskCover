@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AIMP.DiskCover.Infrastructure;
 using AIMP.DiskCover.Interfaces;
-using AIMP.SDK.Player;
+using AIMP.SDK;
 using IF.Lastfm.Core.Api;
 using IF.Lastfm.Core.Api.Enums;
 using IF.Lastfm.Core.Api.Helpers;
@@ -37,22 +37,22 @@ namespace AIMP.DiskCover.CoverFinder
         public CoverRuleType RuleType => CoverRuleType.LastFM;
         public Bitmap GetBitmap(IAimpPlayer player)
         {
-            return GetCoverArtAsync(new TrackInfo(player.CurrentFileInfo), null).Result;
+            return GetCoverArtAsync(new TrackInfo(player.ServicePlayer.CurrentFileInfo), null).Result;
         }
 
         public Bitmap GetBitmap(IAimpPlayer player, FindRule currentRule)
         {
-            return GetCoverArtAsync(new TrackInfo(player.CurrentFileInfo), currentRule).Result;
+            return GetCoverArtAsync(new TrackInfo(player.ServicePlayer.CurrentFileInfo), currentRule).Result;
         }
 
         public Task<Bitmap> GetBitmapAsync(IAimpPlayer player)
         {
-            return GetCoverArtAsync(new TrackInfo(player.CurrentFileInfo), null);
+            return GetCoverArtAsync(new TrackInfo(player.ServicePlayer.CurrentFileInfo), null);
         }
 
         public Task<Bitmap> GetBitmapAsync(IAimpPlayer player, FindRule currentRule)
         {
-            return GetCoverArtAsync(new TrackInfo(player.CurrentFileInfo), currentRule);
+            return GetCoverArtAsync(new TrackInfo(player.ServicePlayer.CurrentFileInfo), currentRule);
         }
 
         private Task<Bitmap> GetCoverArtAsync(TrackInfo trackInfo, FindRule currentRule)

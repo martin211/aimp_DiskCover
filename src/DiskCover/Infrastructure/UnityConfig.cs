@@ -2,6 +2,7 @@
 using AIMP.DiskCover.Infrastructure.Logger;
 using AIMP.DiskCover.Interfaces;
 using AIMP.DiskCover.Settings;
+using AIMP.SDK;
 using AIMP.SDK.Options;
 using AIMP.SDK.Player;
 using Unity;

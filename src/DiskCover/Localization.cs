@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Markup;
 using System.Xaml;
 using AIMP.DiskCover.Infrastructure;
-using AIMP.SDK.Player;
+using AIMP.SDK;
 
 
 namespace AIMP.DiskCover
@@ -137,6 +137,20 @@ namespace AIMP.DiskCover
 			/// </summary>
 			[MarkupLocalization("Cover Art")]
 			public static string MenuName => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverKey}\\MenuName");
+			
+
+			/// <summary>
+			/// Your screen has unusual proportions, its width is not greater than height. Correct work of plugin is not guaranteed.
+			/// </summary>
+			[MarkupLocalization("Your screen has unusual proportions, its width is not greater than height. Correct work of plugin is not guaranteed.")]
+			public static string UnusualProportionsMessage => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverKey}\\UnusualProportionsMessage");
+			
+
+			/// <summary>
+			/// Disk Cover
+			/// </summary>
+			[MarkupLocalization("Disk Cover")]
+			public static string PluginName => LocalizationManager.Instance.GetLocalizedString($"{DiskCoverKey}\\PluginName");
 			public class Options
 			{
 				

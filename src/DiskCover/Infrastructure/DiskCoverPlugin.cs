@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 using AIMP.DiskCover.Infrastructure.Events;
 using AIMP.DiskCover.Interfaces;
 using AIMP.SDK;
-using AIMP.SDK.AlbumArtManager;
+using AIMP.SDK.AlbumArt.Extensions;
 using AIMP.SDK.MenuManager;
+using AIMP.SDK.MenuManager.Objects;
 using AIMP.SDK.MessageDispatcher;
 using AIMP.SDK.Options;
-using AIMP.SDK.Player;
 using AIMP.SDK.Threading;
 
 namespace AIMP.DiskCover.Infrastructure
@@ -22,9 +22,9 @@ namespace AIMP.DiskCover.Infrastructure
             _action = action;
         }
 
-        public AimpActionResult Execute(IAimpTaskOwner owner)
+        public void Execute(IAimpTaskOwner owner)
         {
-            return _action();
+            _action();
         }
     }
 
@@ -103,6 +103,7 @@ namespace AIMP.DiskCover.Infrastructure
                 _menuItem.OnExecute += AimpMenu_Click;
                 _menuItem.Style = MenuItemStyle.CheckBox;
                 _menuItem.Name = Localization.DiskCover.MenuName;
+                _menuItem.Id = Guid.NewGuid().ToString();
                 _isChecked = _settings.IsEnabled;
                 _player.ServiceMenuManager.Add(ParentMenuType.CommonUtilities, _menuItem);
             }
@@ -170,7 +171,7 @@ namespace AIMP.DiskCover.Infrastructure
         private void OnEndFindCoverRequest(UIntPtr aimpTaskId, Bitmap coverArt)
         {
             // if player is not playing, no need to apply search results.
-            if (_player.State == AimpPlayerState.Playing)
+            if (_player.ServicePlayer.State == AimpPlayerState.Playing)
             {
                 UpdateImage(coverArt);
             }
@@ -183,7 +184,7 @@ namespace AIMP.DiskCover.Infrastructure
             _coverWindow.Dispatcher.Invoke(new Action<Bitmap>(_coverWindow.ChangeCoverImage), newImage);
         }
         
-        private AimpActionResult CoreOnCoreMessage(AimpCoreMessageType message, int param1, int param2)
+        private AimpActionResult CoreOnCoreMessage(AimpCoreMessageType message, int param1, IntPtr intPtr)
         {
             if (message == AimpCoreMessageType.EventStreamStart ||
                 message == AimpCoreMessageType.EventStreamStartSubtrack)
@@ -201,7 +202,7 @@ namespace AIMP.DiskCover.Infrastructure
                 RequestFreshCoverImage(message);
             }
 
-            _eventAggregator.Raise(new CoreMessageEventArgs(message, param1, param2));
+            _eventAggregator.Raise(new CoreMessageEventArgs(message, param1, intPtr));
 
             return new AimpActionResult(ActionResultType.OK);
         }
@@ -214,7 +215,7 @@ namespace AIMP.DiskCover.Infrastructure
                 return;
             }
 
-            if (_player.State == AimpPlayerState.Playing || (message.HasValue && message == AimpCoreMessageType.CmdPlay))
+            if (_player.ServicePlayer.State == AimpPlayerState.Playing || (message.HasValue && message == AimpCoreMessageType.CmdPlay))
             {
                 UIntPtr taskId = UIntPtr.Zero;
                 var id = taskId;
