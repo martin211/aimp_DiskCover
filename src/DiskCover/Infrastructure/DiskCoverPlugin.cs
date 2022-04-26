@@ -103,6 +103,7 @@ namespace AIMP.DiskCover.Infrastructure
                 _menuItem.OnExecute += AimpMenu_Click;
                 _menuItem.Style = MenuItemStyle.CheckBox;
                 _menuItem.Name = Localization.DiskCover.MenuName;
+                _menuItem.Id = Guid.NewGuid().ToString();
                 _isChecked = _settings.IsEnabled;
                 _player.ServiceMenuManager.Add(ParentMenuType.CommonUtilities, _menuItem);
             }

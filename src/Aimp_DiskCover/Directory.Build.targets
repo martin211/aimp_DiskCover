@@ -1,0 +1,45 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <PluginName>Aimp_DiskCover</PluginName>
+        <PluginOutput>$(OutDir)..\$(PluginName)\</PluginOutput>
+        <AimpPath>z:\code\aimp\AIMP5.02.2370\Plugins\$(PluginName)</AimpPath>
+    </PropertyGroup>
+
+    <Target Name="CopyPlugin" AfterTargets="Build">
+        <Message Importance="high" Text="CopyPlugin step" />
+
+        <Message Importance="high" Text="PluginOutput: $(PluginOutput)" />
+        <Message Importance="high" Text="Copy files from $(OutDir) to $(PluginOutput)" />
+
+        <ItemGroup>
+            <LangFiles Include="$(SolutionDir)DiskCover\langs\*.*" />
+            <ProjectPlugins Include="$(OutDir)\*.dll" />
+        </ItemGroup>
+
+        <RemoveDir Directories="$(PluginOutput)" />
+
+        <Copy SourceFiles="@(ProjectPlugins)" DestinationFolder="$(PluginOutput)" />
+        <Delete Files="$(PluginOutput)\aimp_dotnet.dll" />
+        <Delete Files="$(PluginOutput)\$(ProjectName).dll" />
+
+        <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(PluginOutput)\$(PluginName)_plugin.dll" />
+        <Copy SourceFiles="@(LangFiles)" DestinationFiles="$(PluginOutput)\langs\%(Filename)%(Extension)" />
+        <Copy SourceFiles="$(OutDir)aimp_dotnet.dll" DestinationFiles="$(PluginOutput)\$(PluginName).dll" />
+    </Target>
+
+    <Target Name="CopyToAimp" AfterTargets="CopyPlugin" Condition="'$(Configuration)' == 'Debug'">
+        <Message Importance="high" Text="Copy to AIMP: '$(AimpPath)'" />
+
+        <RemoveDir Directories="$(AimpPath)" />
+
+        <ItemGroup>
+            <PluginFiles Include="$(PluginOutput)\*.*" />
+            <LangFiles2 Include="$(PluginOutput)\langs\*.*" />
+            <PdbFiles Include="$(OutDir)*.pdb" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(PluginFiles)" DestinationFiles="$(AimpPath)\%(Filename)%(Extension)" />
+        <Copy SourceFiles="@(LangFiles2)" DestinationFiles="$(AimpPath)\langs\%(Filename)%(Extension)" />
+        <Copy SourceFiles="@(PdbFiles)" DestinationFiles="$(AimpPath)\%(Filename)%(Extension)" />
+    </Target>
+</Project>

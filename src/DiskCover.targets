@@ -1,0 +1,28 @@
+﻿<Project>
+    <ItemGroup>
+        <Compile Include="..\DiskCover\CoverFinder\*.*">
+            <Link>CoverFinder\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Infrastructure\**\*.*">
+            <Link>Infrastructure\%(RecursiveDir)%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Interfaces\*.*">
+            <Link>Interfaces\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\langs\*.*">
+            <Link>langs\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Resources\*.*">
+            <Link>Resources\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Themes\*.*">
+            <Link>Themes\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Settings\*.*">
+            <Link>Settings\%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\DiskCover\Core\*.*">
+            <Link>%(FileName)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+</Project>

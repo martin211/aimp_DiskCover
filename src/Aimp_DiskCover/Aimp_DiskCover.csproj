@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{715955C7-73A2-4D13-B470-8728666DA56E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Aimp_DiskCover</RootNamespace>
+    <AssemblyName>Aimp_DiskCover</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Any\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Any\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AIMP.SDK, Version=5.2.2365.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AimpSDK.5.2.2365.1\lib\net48\AIMP.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="aimp_dotnet, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\AimpSDK.5.2.2365.1\lib\net48\aimp_dotnet.dll</HintPath>
+    </Reference>
+    <Reference Include="IF.Lastfm.Core, Version=1.0.1.307, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Inflatable.Lastfm.1.0.1.307\lib\netstandard1.1\IF.Lastfm.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=4242.42.42.42, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.2022.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Abstractions.5.11.7\lib\net48\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Container.5.11.11\lib\net48\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RegistrationByConvention, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.RegistrationByConvention.5.11.1\lib\net47\Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverFinder\AimpCoverFinder.cs">
+      <Link>CoverFinder\AimpCoverFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverFinder\EventActionContext.cs">
+      <Link>CoverFinder\EventActionContext.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverFinder\LastFmFinder.cs">
+      <Link>CoverFinder\LastFmFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverFinder\LocalCoverFinder.cs">
+      <Link>CoverFinder\LocalCoverFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverFinder\TrackInfo.cs">
+      <Link>CoverFinder\TrackInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\CoverWindow.xaml.cs">
+      <Link>CoverWindow.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\AimpMessageHook.cs">
+      <Link>Infrastructure\AimpMessageHook.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs">
+      <Link>Infrastructure\AlbumArtCatalog\AimpExtensionAlbumArtCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Algorithms.cs">
+      <Link>Infrastructure\Algorithms.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\CoverFinderManager.cs">
+      <Link>Infrastructure\CoverFinderManager.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\DependencyResolver.cs">
+      <Link>Infrastructure\DependencyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\DiskCoverPlugin.cs">
+      <Link>Infrastructure\DiskCoverPlugin.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\EventAggregator.cs">
+      <Link>Infrastructure\EventAggregator.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Events\ConfigUpdatedEventArgs.cs">
+      <Link>Infrastructure\Events\ConfigUpdatedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Events\CoreMessageEventArgs.cs">
+      <Link>Infrastructure\Events\CoreMessageEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Events\SaveConfigEventArgs.cs">
+      <Link>Infrastructure\Events\SaveConfigEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\FinderEvents.cs">
+      <Link>Infrastructure\FinderEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\FindRule.cs">
+      <Link>Infrastructure\FindRule.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Logger\FileLoggerManager.cs">
+      <Link>Infrastructure\Logger\FileLoggerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Logger\InternalLoggerManager.cs">
+      <Link>Infrastructure\Logger\InternalLoggerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\Native\Win32.cs">
+      <Link>Infrastructure\Native\Win32.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\UnityConfig.cs">
+      <Link>Infrastructure\UnityConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\UnityDependencyResolver.cs">
+      <Link>Infrastructure\UnityDependencyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Infrastructure\ViewModelsProvider.cs">
+      <Link>Infrastructure\ViewModelsProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\IConfigProvider.cs">
+      <Link>Interfaces\IConfigProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\ICoverFinder.cs">
+      <Link>Interfaces\ICoverFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\ICoverFinderManager.cs">
+      <Link>Interfaces\ICoverFinderManager.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\IDiskCoverPlugin.cs">
+      <Link>Interfaces\IDiskCoverPlugin.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\ILogger.cs">
+      <Link>Interfaces\ILogger.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\IPluginSettings.cs">
+      <Link>Interfaces\IPluginSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Interfaces\IViewModelsProvider.cs">
+      <Link>Interfaces\IViewModelsProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Localization.cs">
+      <Link>Localization.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localization.tt</DependentUpon>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\ConfigProvider.cs">
+      <Link>Settings\ConfigProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\OptionsForm.cs">
+      <Link>Settings\OptionsForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\OptionsForm.Designer.cs">
+      <Link>Settings\OptionsForm.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\OptionsFrame.cs">
+      <Link>Settings\OptionsFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\RelayCommand.cs">
+      <Link>Settings\RelayCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\RuleEditor.xaml.cs">
+      <Link>Settings\RuleEditor.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\SettingsViewModel.cs">
+      <Link>Settings\SettingsViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\DiskCover\Settings\SettingsWindow.xaml.cs">
+      <Link>Settings\SettingsWindow.xaml.cs</Link>
+    </Compile>
+    <Compile Include="AimpDiskCoverPlugin.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DiskCover\langs\english.lng">
+      <Link>langs\english.lng</Link>
+    </None>
+    <None Include="..\DiskCover\langs\russian.lng">
+      <Link>langs\russian.lng</Link>
+    </None>
+    <None Include="Directory.Build.targets" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\DiskCover\Localization.tt">
+      <Link>Localization.tt</Link>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Localization.cs</LastGenOutput>
+    </Content>
+    <None Include="Resources\NoCover.png" />
+    <None Include="Resources\lastfm.png" />
+    <None Include="Resources\diskcover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\DiskCover\Settings\OptionsForm.resx">
+      <Link>Settings\OptionsForm.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\DiskCover\CoverWindow.xaml">
+      <Link>CoverWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\DiskCover\Settings\RuleEditor.xaml">
+      <Link>Settings\RuleEditor.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\DiskCover\Settings\SettingsWindow.xaml">
+      <Link>Settings\SettingsWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\DiskCover\Themes\Aimp.xaml">
+      <Link>Themes\Aimp.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
