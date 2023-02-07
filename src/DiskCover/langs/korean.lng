@@ -1,0 +1,48 @@
+
+[DiskCover]
+Title=디스크 표지
+MenuName=커버 아트
+UnusualProportionsMessage=화면 너비가 높이보다 크지 않으므로 화면 비율이 비정상적입니다. 플러그인의 정확한 작동은 보장되지 않습니다.
+PluginName=Disk Cover
+
+[DiskCover.Options]
+DisplayIconInTaskbar=작업 표시줄에 아이콘 표시
+EnableResizeModeHotkeys=크기 조정 모드 단축키 사용
+General=생성
+SearchRules=검색 규칙
+Help=도움말
+Title=설정
+AvailableRules=사용 가능한 규칙:
+AppliedRules=적용된 규칙:
+ShiftDescription=창을 정사각형 비율을 취하여 유지합니다.
+AltDescription=창에 현재 표시된 사진의 비율이 표시됩니다.
+CtrlDescription=창을 현재 비율을 유지합니다.
+CoverFile='커버.*' 파일 검색
+FromTags=태그에서 불러오기
+AlbumFile='앨범 이름.*' 검색
+LastFM=last.fm에서 검색
+Aimp=AIMP 라이브러리에서
+Rules=검색 규칙
+DebugMode=디버그 모드 사용
+About=플러그인 정보...
+Authors=저자
+Version=버전
+PluginVersion=플러그인
+ShaCommit=커밋
+AddRule=규칙 추가
+DeleteRule=규칙 제거
+UpRule=규칙 처리 우선 순위 증가
+DownRule=규칙 처리 우선 순위 감소
+CopyToClipboard=클립보드에 복사
+
+[DiskCover.AlbumArtCatalog]
+Name=플러그인: 디스크 표지
+
+[DiskCover.Rules]
+HelpCoverFile=앨범 폴더에서 커버 아트 찾기
+HelpFromAimp=Aimp 플레이어에서 커버 아트 찾기
+HelpLastFm=LastFM에서 커버 아트 찾기
+HelpAlbumFile=앨범 폴더에서 커버 아트 찾기
+
+[DiskCover.ContextMenu]
+SaveToTags=태그에 저장
